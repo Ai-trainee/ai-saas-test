@@ -55,11 +55,8 @@ export default function LoginPage() {
 
         if (signInError) throw signInError
 
-        router.push("/dashboard")
-        toast({
-          title: "登录成功",
-          description: "欢迎回来"
-        })
+        // 使用 window.location 而不是 router.push 来确保完全刷新页面
+        window.location.href = '/dashboard'
       }
     } catch (error: any) {
       toast({

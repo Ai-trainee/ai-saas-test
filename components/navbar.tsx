@@ -33,21 +33,16 @@ export function Navbar() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
-      if (!session) {
-        router.push("/")
-      }
     })
 
     return () => subscription.unsubscribe()
-  }, [router])
+  }, [])
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut()
-      router.push("/")
-      toast({
-        title: "已退出登录"
-      })
+      localStorage.removeItem('supabase.auth.token')
+      window.location.href = '/'
     } catch (error: any) {
       toast({
         title: "退出失败",

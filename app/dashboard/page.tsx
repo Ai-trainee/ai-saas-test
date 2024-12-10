@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { Loader2, ImagePlus, Settings2, Sparkles } from "lucide-react"
 import { imageModels, type ImageModelConfig } from "@/lib/image-models"
+import { supabase } from "@/lib/supabase"
 import {
   Select,
   SelectContent,
@@ -27,6 +29,9 @@ import { Slider } from "@/components/ui/slider"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function DashboardPage() {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
@@ -35,6 +40,35 @@ export default function DashboardPage() {
   const [height, setHeight] = useState(selectedModel.defaultParams.height)
   const [steps, setSteps] = useState(selectedModel.defaultParams.steps)
   const [numImages, setNumImages] = useState(selectedModel.defaultParams.n)
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  async function checkAuth() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        router.replace('/login')
+        return
+      }
+      setIsAuthenticated(true)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   const handleModelChange = (modelId: string) => {
     const model = imageModels.find(m => m.id === modelId)

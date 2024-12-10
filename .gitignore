@@ -1,5 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+#忽略图像生成高级功能.zip
+*.zip
 # dependencies
 /node_modules
 /.pnp
@@ -7,7 +8,7 @@
 
 # testing
 /coverage
-
+/.bolt
 # next.js
 /.next/
 /out/

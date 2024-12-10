@@ -33,10 +33,13 @@ export function Navbar() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
+      if (!session) {
+        router.push("/")
+      }
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [router])
 
   const handleLogout = async () => {
     try {

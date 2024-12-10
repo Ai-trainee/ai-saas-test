@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
@@ -15,6 +15,15 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+
+  // 检查登录状态
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        router.push("/dashboard")
+      }
+    })
+  }, [router])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -47,6 +56,10 @@ export default function LoginPage() {
         if (signInError) throw signInError
 
         router.push("/dashboard")
+        toast({
+          title: "登录成功",
+          description: "欢迎回来"
+        })
       }
     } catch (error: any) {
       toast({

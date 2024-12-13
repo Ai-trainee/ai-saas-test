@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { Loader2, Upload, Eye } from "lucide-react"
+import { Loader2, Upload, Eye, Image as ImageIcon } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import {
   Select,
@@ -17,6 +17,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { motion, AnimatePresence } from "framer-motion"
 
+// 预设分析模式
 const analysisTemplates = {
   general_description: "对图像进行详细描述，包括主要元素、场景、颜色等。",
   weather_analysis: "根据图中的内容，推测出当天的天气",
@@ -27,7 +28,12 @@ const analysisTemplates = {
   object_count: "统计并列出图中的主要物体数量",
   color_analysis: "分析图片的主要色调和配色方案",
   text_recognition: "识别并提取图片中的文字信息",
-  style_analysis: "分析图片的风格特点和艺术元素"
+  style_analysis: "分析图片的风格特点和艺术元素",
+  emotion_analysis: "分析图中人物的表情和情感状态",
+  brand_recognition: "识别图中的品牌标识和商标",
+  safety_check: "检查图片是否包含不当或危险内容",
+  composition_analysis: "分析图片的构图和摄影技巧",
+  accessibility_check: "评估图片的可访问性，为视障人士提供描述"
 }
 
 export default function VisionAnalysisPage() {
@@ -39,6 +45,8 @@ export default function VisionAnalysisPage() {
   const [imageUrl, setImageUrl] = useState("")
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResult, setAnalysisResult] = useState<string | null>(null)
+  const [streamingResult, setStreamingResult] = useState<string>("")
+  const [isStreaming, setIsStreaming] = useState(false)
 
   useEffect(() => {
     checkAuth()
@@ -69,6 +77,44 @@ export default function VisionAnalysisPage() {
     return null
   }
 
+  // 处理流式响应
+  async function handleStream(reader: ReadableStreamDefaultReader<Uint8Array>) {
+    const decoder = new TextDecoder()
+    let accumulatedResult = ""
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value)
+        const lines = chunk.split('\n')
+        
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const jsonStr = line.slice(6)
+            if (jsonStr === '[DONE]') {
+              setIsStreaming(false)
+              break
+            }
+            
+            try {
+              const data = JSON.parse(jsonStr)
+              const content = data.choices[0].delta.content || ''
+              accumulatedResult += content
+              setStreamingResult(accumulatedResult)
+            } catch (e) {
+              console.error('解析JSON失败:', e)
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('处理流失败:', error)
+      setIsStreaming(false)
+    }
+  }
+
   async function analyzeImage() {
     if (!imageUrl) {
       toast({
@@ -79,6 +125,8 @@ export default function VisionAnalysisPage() {
     }
 
     setIsAnalyzing(true)
+    setStreamingResult("")
+    setIsStreaming(true)
 
     try {
       const prompt = selectedTemplate === "visual_qa" ? customPrompt : analysisTemplates[selectedTemplate]
@@ -87,8 +135,7 @@ export default function VisionAnalysisPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // TODO: 替换为实际的API Key
-          Authorization: "Bearer 57d7bd698558bb0cdea9ad30ecff7745.ckOoHXBVmxTjhAWB",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GLM_API_KEY}`,
         },
         body: JSON.stringify({
           model: "glm-4v-flash",
@@ -109,14 +156,19 @@ export default function VisionAnalysisPage() {
               ]
             }
           ],
-          stream: false
+          stream: true
         }),
       })
 
-      const data = await response.json()
-      if (data.error) throw new Error(data.error)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
-      setAnalysisResult(data.choices[0].message.content)
+      const reader = response.body?.getReader()
+      if (reader) {
+        await handleStream(reader)
+      }
+
       toast({
         title: "分析完成",
       })
@@ -126,6 +178,7 @@ export default function VisionAnalysisPage() {
         description: error.message,
         variant: "destructive",
       })
+      setIsStreaming(false)
     } finally {
       setIsAnalyzing(false)
     }
@@ -153,14 +206,20 @@ export default function VisionAnalysisPage() {
                 <SelectItem value="weather_analysis">天气分析</SelectItem>
                 <SelectItem value="product_title">商品标题</SelectItem>
                 <SelectItem value="visual_qa">视觉问答</SelectItem>
-                <SelectItem value="quality_check">质��检查</SelectItem>
+                <SelectItem value="quality_check">质量检查</SelectItem>
                 <SelectItem value="scene_analysis">场景分析</SelectItem>
                 <SelectItem value="object_count">物体统计</SelectItem>
                 <SelectItem value="color_analysis">色彩分析</SelectItem>
                 <SelectItem value="text_recognition">文字识别</SelectItem>
                 <SelectItem value="style_analysis">风格分析</SelectItem>
+                <SelectItem value="emotion_analysis">情感分析</SelectItem>
+                <SelectItem value="brand_recognition">品牌识别</SelectItem>
+                <SelectItem value="safety_check">安全检查</SelectItem>
+                <SelectItem value="composition_analysis">构图分析</SelectItem>
+                <SelectItem value="accessibility_check">可访问性检查</SelectItem>
               </SelectContent>
             </Select>
+            <p className="text-sm text-muted-foreground">{analysisTemplates[selectedTemplate]}</p>
           </div>
 
           {selectedTemplate === "visual_qa" && (
@@ -203,7 +262,7 @@ export default function VisionAnalysisPage() {
         </div>
 
         <AnimatePresence>
-          {analysisResult && (
+          {(streamingResult || analysisResult) && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -212,17 +271,29 @@ export default function VisionAnalysisPage() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold">分析结果</h2>
+                {isStreaming && (
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    生成中...
+                  </div>
+                )}
               </div>
               <div className="rounded-lg border p-4 space-y-4">
                 <div className="aspect-video relative rounded-lg overflow-hidden border">
-                  <img
-                    src={imageUrl}
-                    alt="分析的图片"
-                    className="w-full h-full object-contain"
-                  />
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt="分析的图片"
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-muted">
+                      <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                  )}
                 </div>
                 <div className="prose max-w-none">
-                  <p className="whitespace-pre-wrap">{analysisResult}</p>
+                  <p className="whitespace-pre-wrap">{streamingResult || analysisResult}</p>
                 </div>
               </div>
             </motion.div>

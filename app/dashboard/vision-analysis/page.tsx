@@ -22,6 +22,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { useRouter } from "next/navigation"
 import "./styles.css"
+import { StarryBackground } from "@/components/ui/starry-background"
+
 interface Message {
   role: 'user' | 'assistant'
   content: Array<{
@@ -275,13 +277,15 @@ export default function VisionAnalysisPage() {
   }, [messages])
 
   return (
-    <div className="relative min-h-screen bg-[#18181C] overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden">
+      <StarryBackground />
+
       {/* 返回按钮 */}
       <div className="absolute top-4 left-4 z-50 flex items-center gap-4">
         <Button
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:text-gray-200"
+          className="text-gray-400 hover:text-gray-200 backdrop-blur-md bg-black/20"
           onClick={() => router.push('/dashboard')}
         >
           <ArrowLeft className="w-4 h-4 mr-1" />
@@ -290,7 +294,7 @@ export default function VisionAnalysisPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="text-gray-400 hover:text-gray-200"
+          className="text-gray-400 hover:text-gray-200 backdrop-blur-md bg-black/20"
           onClick={() => router.push('/')}
         >
           <Home className="w-4 h-4 mr-1" />
@@ -300,69 +304,32 @@ export default function VisionAnalysisPage() {
 
       {/* 主要内容区域 */}
       <div className="flex h-screen pt-16">
-        {/* 功能选择区 - 使用气泡效果 */}
-        <div className="relative w-[320px] border-r border-gray-800">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent" />
+        {/* 功能选择区 */}
+        <div className="relative w-[320px] border-r border-gray-800/50">
+          <div className="h-full overflow-y-auto px-4 py-6 space-y-4">
             {functionButtons.map((btn, index) => (
-              <motion.div
+              <motion.button
                 key={btn.id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1,
-                  transition: { delay: index * 0.1 }
-                }}
-                className="absolute"
-                style={{
-                  left: `${Math.random() * 60 + 20}%`,
-                  top: `${(index * 12) + 5}%`,
-                }}
+                className={`function-card w-full text-left p-4 rounded-xl ${
+                  selectedFunction === btn.id ? 'active' : ''
+                }`}
+                onClick={() => handleFunctionClick(btn)}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
               >
-                <button
-                  onClick={() => handleFunctionClick(btn)}
-                  className={`
-                    relative group flex items-center gap-3 p-4 rounded-2xl
-                    backdrop-blur-md transition-all duration-300
-                    ${selectedFunction === btn.id 
-                      ? 'bg-purple-500/20 shadow-lg shadow-purple-500/20' 
-                      : 'bg-gray-800/40 hover:bg-gray-800/60'
-                    }
-                  `}
-                >
-                  <div className={`
-                    relative flex items-center justify-center w-10 h-10 rounded-xl
-                    ${selectedFunction === btn.id 
-                      ? 'bg-purple-500/20' 
-                      : 'bg-gray-800 group-hover:bg-gray-700'
-                    }
-                  `}>
+                <div className="flex items-start gap-4">
+                  <div className="icon-container p-3 rounded-lg bg-gray-800/50">
                     <span className={selectedFunction === btn.id ? 'text-purple-400' : btn.color}>
                       {btn.icon}
                     </span>
-                    {/* 光晕效果 */}
-                    <div className={`
-                      absolute inset-0 rounded-xl transition-opacity duration-300
-                      ${selectedFunction === btn.id 
-                        ? 'opacity-100' 
-                        : 'opacity-0 group-hover:opacity-50'
-                      }
-                    `}>
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-shine" />
-                    </div>
                   </div>
                   <div className="flex-1">
                     <div className="text-sm font-medium text-gray-200">{btn.label}</div>
-                    <div className="text-xs text-gray-500">{btn.description}</div>
+                    <div className="text-xs text-gray-500 mt-1">{btn.description}</div>
                   </div>
-                  {selectedFunction === btn.id && (
-                    <motion.div
-                      layoutId="activeIndicator"
-                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-purple-500 rounded-l-full"
-                    />
-                  )}
-                </button>
-              </motion.div>
+                </div>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -373,15 +340,15 @@ export default function VisionAnalysisPage() {
             <div className="max-w-3xl mx-auto space-y-6 py-4">
               {isFirstMessage && messages.length === 0 && (
                 <motion.div 
+                  className="welcome-container flex flex-col items-center justify-center py-20 space-y-6"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col items-center justify-center py-20 space-y-6"
                 >
                   <div className="relative">
-                    <Bot className="w-20 h-20 text-purple-500 opacity-50" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-transparent rounded-full animate-pulse" />
+                    <Bot className="w-20 h-20 text-purple-400 opacity-80" />
+                    <div className="absolute inset-0 bg-purple-500/20 rounded-full blur-xl animate-pulse" />
                   </div>
-                  <div className="text-center space-y-2">
+                  <div className="text-center space-y-2 backdrop-blur-sm bg-black/20 p-6 rounded-2xl">
                     <h3 className="text-2xl font-medium text-gray-200">
                       欢迎使用 AI 视觉助手
                     </h3>
@@ -393,14 +360,12 @@ export default function VisionAnalysisPage() {
                     {functionButtons.slice(0, 4).map((btn) => (
                       <motion.button
                         key={btn.id}
+                        className="function-card flex items-center gap-3 p-4 rounded-xl"
+                        onClick={() => handleFunctionClick(btn)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => handleFunctionClick(btn)}
-                        className="flex items-center gap-3 p-4 rounded-xl
-                          bg-gray-800/50 hover:bg-gray-800/70
-                          backdrop-blur-sm transition-colors duration-200"
                       >
-                        <span className={`${btn.color} p-2 rounded-lg bg-gray-800`}>
+                        <span className={`${btn.color} p-2 rounded-lg bg-gray-800/50`}>
                           {btn.icon}
                         </span>
                         <span className="text-sm text-gray-200">{btn.label}</span>
@@ -410,7 +375,6 @@ export default function VisionAnalysisPage() {
                 </motion.div>
               )}
               
-              {/* 消息列表部分保持不变 */}
               <AnimatePresence>
                 {messages.map((message, index) => (
                   <motion.div
@@ -431,10 +395,10 @@ export default function VisionAnalysisPage() {
                     )}
                     <div
                       className={`
-                        max-w-[80%] rounded-lg p-3
+                        chat-message max-w-[80%] rounded-xl p-4
                         ${message.role === 'assistant'
-                          ? 'bg-[#2D2D35] text-gray-200'
-                          : 'bg-purple-600/20 text-gray-100'
+                          ? 'bg-gray-800/40'
+                          : 'bg-purple-500/20'
                         }
                       `}
                     >
@@ -444,11 +408,11 @@ export default function VisionAnalysisPage() {
                             <img
                               src={content.image_url?.url}
                               alt="Uploaded content"
-                              className="max-h-[200px] w-auto object-contain rounded"
+                              className="max-h-[200px] w-auto object-contain rounded-lg"
                             />
                           )}
                           {content.type === 'text' && (
-                            <p className="text-sm leading-relaxed">
+                            <p className="text-sm leading-relaxed text-gray-200">
                               {content.text}
                             </p>
                           )}
@@ -457,8 +421,8 @@ export default function VisionAnalysisPage() {
                     </div>
                     {message.role === 'user' && (
                       <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-gray-700">
-                          <User className="w-4 h-4 text-gray-400" />
+                        <AvatarFallback className="bg-purple-500/20">
+                          <User className="w-4 h-4 text-purple-400" />
                         </AvatarFallback>
                       </Avatar>
                     )}
@@ -470,21 +434,26 @@ export default function VisionAnalysisPage() {
           </ScrollArea>
 
           {/* 输入区域 */}
-          <div className="border-t border-gray-800">
+          <div className="border-t border-gray-800/50 backdrop-blur-xl">
             <div className="max-w-3xl mx-auto p-4">
               <div className="relative">
                 {/* 图片预览 */}
                 {imageUrl && (
-                  <div className="absolute -top-20 left-0 right-0 h-16 bg-[#2D2D35] rounded-lg p-2 flex items-center gap-2">
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 20 }}
+                    className="absolute -top-20 left-0 right-0 h-16 function-card rounded-xl p-2 flex items-center gap-2"
+                  >
                     <img
                       src={imageUrl}
                       alt="Preview"
-                      className="h-full w-auto object-contain rounded"
+                      className="h-full w-auto object-contain rounded-lg"
                     />
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0"
+                      className="h-6 w-6 p-0 hover:bg-gray-700/50"
                       onClick={() => {
                         setImageUrl('')
                         setBase64Image('')
@@ -492,13 +461,13 @@ export default function VisionAnalysisPage() {
                     >
                       <X className="h-4 w-4 text-gray-400" />
                     </Button>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* 输入框 */}
                 <div
                   className={`
-                    relative rounded-lg bg-[#2D2D35] 
+                    input-container relative rounded-xl
                     ${isDragging ? 'ring-2 ring-purple-500' : ''}
                   `}
                   onDragOver={handleDragOver}
@@ -526,7 +495,7 @@ export default function VisionAnalysisPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 hover:bg-[#3D3D45]"
+                      className="h-8 w-8 hover:bg-gray-700/50"
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <ImageIcon className="h-4 w-4 text-gray-400" />
@@ -536,12 +505,12 @@ export default function VisionAnalysisPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-8 w-8 hover:bg-[#3D3D45]"
+                          className="h-8 w-8 hover:bg-gray-700/50"
                         >
                           <Link className="h-4 w-4 text-gray-400" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-80 p-4">
+                      <PopoverContent className="w-80 p-4 function-card border-none">
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm text-gray-200">输入图片URL</h4>
                           <Textarea
@@ -551,14 +520,15 @@ export default function VisionAnalysisPage() {
                               setImageUrl(e.target.value)
                               setBase64Image('')
                             }}
-                            className="min-h-[80px] bg-[#2D2D35] border-0 text-gray-200 
-                              placeholder:text-gray-500 resize-none"
+                            className="min-h-[80px] bg-gray-800/50 border-0 text-gray-200 
+                              placeholder:text-gray-500 resize-none focus:ring-0"
                           />
                           <div className="flex justify-end">
                             <Button
                               size="sm"
                               variant="secondary"
                               onClick={() => setShowImageUrlInput(false)}
+                              className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-400"
                             >
                               确定
                             </Button>
@@ -569,20 +539,24 @@ export default function VisionAnalysisPage() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 hover:bg-[#3D3D45]"
+                      className="h-8 w-8 hover:bg-gray-700/50"
                     >
                       <Mic className="h-4 w-4 text-gray-400" />
                     </Button>
-                    <div className="relative">
+                    <motion.div
+                      className="relative"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                       <Button
                         onClick={handleSendMessage}
                         disabled={isProcessing || (!imageUrl && !inputText)}
                         className="h-8 w-8 bg-transparent hover:bg-transparent p-0"
                       >
                         <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg opacity-20" />
-                        <Send className="h-4 w-4 text-purple-500 transform rotate-45" />
+                        <Send className="h-4 w-4 text-purple-400 transform rotate-45" />
                       </Button>
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </div>
@@ -591,17 +565,6 @@ export default function VisionAnalysisPage() {
         </div>
       </div>
 
-      {/* 添加全局动画背景 */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-transparent" />
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute w-[500px] h-[500px] top-0 -left-40 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
-          <div className="absolute w-[500px] h-[500px] top-0 -right-40 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
-          <div className="absolute w-[500px] h-[500px] bottom-0 left-40 bg-green-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
-        </div>
-      </div>
-
-      {/* 文件输入保持不变 */}
       <input
         type="file"
         ref={fileInputRef}

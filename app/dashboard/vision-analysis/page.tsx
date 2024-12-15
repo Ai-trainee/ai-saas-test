@@ -8,7 +8,7 @@ import {
   Send, ImageIcon, Link, Mic,
   Camera, FileText, Brain, MessageSquare,
   Palette, Search, Brush, PenTool,
-  User, Bot
+  User, Bot, X
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -279,60 +279,62 @@ export default function VisionAnalysisPage() {
     <div className="relative min-h-screen overflow-hidden">
       <StarryBackground />
 
-      {/* 星空导航 */}
-      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-8">
+      {/* 星空导航 - 改为悬浮星星 */}
+      <div className="fixed top-8 left-8 z-50 flex flex-col gap-4">
         <motion.div
-          className="nav-star-container"
-          whileHover={{ scale: 1.2 }}
+          className="cosmic-nav-star"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => router.push('/dashboard')}
         >
-          <div className="nav-star">
-            <span className="text-xs text-purple-200 opacity-80">返回仪表盘</span>
-          </div>
-        </motion.div>
-        <motion.div
-          className="nav-star-container"
-          whileHover={{ scale: 1.2 }}
-          onClick={() => router.push('/')}
-        >
-          <div className="nav-star">
-            <span className="text-xs text-purple-200 opacity-80">返回主页</span>
+          <div className="cosmic-nav-star-content">
+            <div className="cosmic-nav-star-glow" />
+            <span className="text-xs text-purple-200">返回</span>
           </div>
         </motion.div>
       </div>
 
       {/* 主要内容区域 */}
-      <div className="flex min-h-screen">
-        {/* 功能星座区 */}
+      <div className="flex min-h-screen pt-4">
+        {/* 功能星座区 - 使用极坐标布局 */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="constellation-container"
         >
-          {functionButtons.map((btn, index) => (
-            <motion.button
-              key={btn.id}
-              className={`constellation-star ${
-                selectedFunction === btn.id ? 'active' : ''
-              }`}
-              style={{
-                top: `${Math.sin(index * (Math.PI / 4)) * 200 + 300}px`,
-                left: `${Math.cos(index * (Math.PI / 4)) * 200 + 200}px`,
-              }}
-              whileHover={{ scale: 1.2 }}
-              onClick={() => handleFunctionClick(btn)}
-            >
-              <div className="star-content">
-                <span className={`star-icon ${btn.color}`}>
-                  {btn.icon}
-                </span>
-                <div className="star-info">
-                  <span className="star-label">{btn.label}</span>
-                  <span className="star-description">{btn.description}</span>
+          {functionButtons.map((btn, index) => {
+            const angle = (index * 2 * Math.PI) / functionButtons.length
+            const radius = 280 // 星座半径
+            const x = Math.cos(angle) * radius + radius
+            const y = Math.sin(angle) * radius + radius
+
+            return (
+              <motion.button
+                key={btn.id}
+                className={`constellation-star ${
+                  selectedFunction === btn.id ? 'active' : ''
+                }`}
+                style={{
+                  top: `${y}px`,
+                  left: `${x}px`,
+                }}
+                whileHover={{ scale: 1.2 }}
+                onClick={() => handleFunctionClick(btn)}
+              >
+                <div className="star-content">
+                  <span className={`star-icon ${btn.color}`}>
+                    {btn.icon}
+                  </span>
+                  <div className="star-info">
+                    <span className="star-label">{btn.label}</span>
+                    <span className="star-description">{btn.description}</span>
+                  </div>
                 </div>
-              </div>
-            </motion.button>
-          ))}
+                {/* 添加星座连线 */}
+                <div className="constellation-line" />
+              </motion.button>
+            )
+          })}
         </motion.div>
 
         {/* 对话区域 */}
@@ -360,6 +362,7 @@ export default function VisionAnalysisPage() {
                 </motion.div>
               )}
               
+              {/* 消息列表 */}
               <AnimatePresence>
                 {messages.map((message, index) => (
                   <motion.div
@@ -434,17 +437,16 @@ export default function VisionAnalysisPage() {
                       alt="Preview"
                       className="h-full w-auto object-contain rounded-lg"
                     />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0 hover:bg-gray-700/50"
+                    <motion.button
+                      className="cosmic-tool"
+                      whileHover={{ scale: 1.2 }}
                       onClick={() => {
                         setImageUrl('')
                         setBase64Image('')
                       }}
                     >
-                      <X className="h-4 w-4 text-gray-400" />
-                    </Button>
+                      <X className="h-4 w-4 text-purple-400" />
+                    </motion.button>
                   </motion.div>
                 )}
 
@@ -496,14 +498,13 @@ export default function VisionAnalysisPage() {
                               placeholder:text-gray-500 resize-none focus:ring-0"
                           />
                           <div className="flex justify-end">
-                            <Button
-                              size="sm"
-                              variant="secondary"
+                            <motion.button
+                              className="cosmic-button"
+                              whileHover={{ scale: 1.05 }}
                               onClick={() => setShowImageUrlInput(false)}
-                              className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-400"
                             >
                               确定
-                            </Button>
+                            </motion.button>
                           </div>
                         </div>
                       </PopoverContent>

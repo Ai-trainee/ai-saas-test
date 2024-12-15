@@ -8,7 +8,7 @@ import {
   Loader2, Image as ImageIcon, Link, Mic, Send,
   Camera, FileText, Brain, MessageSquare,
   Palette, Search, Brush, PenTool, Upload,
-  Plus, X, User, Bot
+  Plus, X, User, Bot, ArrowLeft, Home
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -20,7 +20,8 @@ import {
 } from "@/components/ui/popover"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { useLocalStorage } from "@/hooks/use-local-storage"
-
+import { useRouter } from "next/navigation"
+import "./styles.css"
 interface Message {
   role: 'user' | 'assistant'
   content: Array<{
@@ -33,6 +34,7 @@ interface Message {
 }
 
 export default function VisionAnalysisPage() {
+  const router = useRouter()
   const [imageUrl, setImageUrl] = useState("")
   const [inputText, setInputText] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
@@ -273,270 +275,313 @@ export default function VisionAnalysisPage() {
   }, [messages])
 
   return (
-    <div className="flex h-screen bg-[#18181C]">
-      {/* 主要内容区域 */}
-      <div className="flex-1 flex flex-col">
-        {/* 顶部导航 */}
-        <div className="flex items-center justify-between px-6 py-3 border-b border-gray-800">
-          <div className="flex items-center gap-2">
-            <Bot className="w-6 h-6 text-purple-500" />
-            <span className="text-lg font-medium text-gray-200">AI视觉助手</span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-400 hover:text-gray-200"
-            onClick={handleNewChat}
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            新对话
-          </Button>
-        </div>
+    <div className="relative min-h-screen bg-[#18181C] overflow-hidden">
+      {/* 返回按钮 */}
+      <div className="absolute top-4 left-4 z-50 flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-gray-400 hover:text-gray-200"
+          onClick={() => router.push('/dashboard')}
+        >
+          <ArrowLeft className="w-4 h-4 mr-1" />
+          返回仪表盘
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-gray-400 hover:text-gray-200"
+          onClick={() => router.push('/')}
+        >
+          <Home className="w-4 h-4 mr-1" />
+          返回主页
+        </Button>
+      </div>
 
-        {/* 功能选择和对话区域 */}
-        <div className="flex-1 flex">
-          {/* 功能选择区 */}
-          <div className="w-[280px] border-r border-gray-800 overflow-y-auto">
-            <div className="p-4 grid grid-cols-1 gap-2">
-              {functionButtons.map((btn) => (
+      {/* 主要内容区域 */}
+      <div className="flex h-screen pt-16">
+        {/* 功能选择区 - 使用气泡效果 */}
+        <div className="relative w-[320px] border-r border-gray-800">
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 to-transparent" />
+            {functionButtons.map((btn, index) => (
+              <motion.div
+                key={btn.id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1,
+                  transition: { delay: index * 0.1 }
+                }}
+                className="absolute"
+                style={{
+                  left: `${Math.random() * 60 + 20}%`,
+                  top: `${(index * 12) + 5}%`,
+                }}
+              >
                 <button
-                  key={btn.id}
                   onClick={() => handleFunctionClick(btn)}
                   className={`
-                    group relative flex items-center gap-3 p-3 rounded-lg
-                    transition-all duration-200 
+                    relative group flex items-center gap-3 p-4 rounded-2xl
+                    backdrop-blur-md transition-all duration-300
                     ${selectedFunction === btn.id 
-                      ? 'bg-purple-500/20 text-purple-400' 
-                      : 'hover:bg-gray-800/50 text-gray-400 hover:text-gray-200'
+                      ? 'bg-purple-500/20 shadow-lg shadow-purple-500/20' 
+                      : 'bg-gray-800/40 hover:bg-gray-800/60'
                     }
                   `}
                 >
                   <div className={`
-                    flex items-center justify-center w-8 h-8 rounded-lg
+                    relative flex items-center justify-center w-10 h-10 rounded-xl
                     ${selectedFunction === btn.id 
-                      ? 'bg-purple-500/10' 
+                      ? 'bg-purple-500/20' 
                       : 'bg-gray-800 group-hover:bg-gray-700'
                     }
                   `}>
                     <span className={selectedFunction === btn.id ? 'text-purple-400' : btn.color}>
                       {btn.icon}
                     </span>
+                    {/* 光晕效果 */}
+                    <div className={`
+                      absolute inset-0 rounded-xl transition-opacity duration-300
+                      ${selectedFunction === btn.id 
+                        ? 'opacity-100' 
+                        : 'opacity-0 group-hover:opacity-50'
+                      }
+                    `}>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-shine" />
+                    </div>
                   </div>
-                  <div className="flex-1 text-left">
-                    <div className="text-sm font-medium">{btn.label}</div>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-gray-200">{btn.label}</div>
                     <div className="text-xs text-gray-500">{btn.description}</div>
                   </div>
                   {selectedFunction === btn.id && (
-                    <div className="absolute left-0 w-1 h-full bg-purple-500 rounded-r-full" />
+                    <motion.div
+                      layoutId="activeIndicator"
+                      className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-8 bg-purple-500 rounded-l-full"
+                    />
                   )}
                 </button>
-              ))}
-            </div>
+              </motion.div>
+            ))}
           </div>
+        </div>
 
-          {/* 对话区域 */}
-          <div className="flex-1 flex flex-col">
-            <ScrollArea className="flex-1 px-4">
-              <div className="max-w-3xl mx-auto space-y-6 py-4">
-                {isFirstMessage && messages.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-20 space-y-6">
-                    <Bot className="w-16 h-16 text-purple-500 opacity-50" />
-                    <div className="text-center space-y-2">
-                      <h3 className="text-xl font-medium text-gray-200">
-                        欢迎使用 AI 视觉助手
-                      </h3>
-                      <p className="text-sm text-gray-400 max-w-md">
-                        从左侧选择一个功能开始对话，或者直接输入您的问题。支持文字输入和图片上传。
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 mt-6">
-                      {functionButtons.slice(0, 4).map((btn) => (
-                        <button
-                          key={btn.id}
-                          onClick={() => handleFunctionClick(btn)}
-                          className="flex items-center gap-2 px-4 py-2 rounded-lg
-                            bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200
-                            transition-colors duration-200"
-                        >
-                          <span className={btn.color}>{btn.icon}</span>
-                          <span className="text-sm">{btn.label}</span>
-                        </button>
+        {/* 对话区域 */}
+        <div className="flex-1 flex flex-col">
+          <ScrollArea className="flex-1 px-4">
+            <div className="max-w-3xl mx-auto space-y-6 py-4">
+              {isFirstMessage && messages.length === 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center justify-center py-20 space-y-6"
+                >
+                  <div className="relative">
+                    <Bot className="w-20 h-20 text-purple-500 opacity-50" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-transparent rounded-full animate-pulse" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <h3 className="text-2xl font-medium text-gray-200">
+                      欢迎使用 AI 视觉助手
+                    </h3>
+                    <p className="text-sm text-gray-400 max-w-md">
+                      从左侧选择一个功能开始对话，或者直接输入您的问题。支持文字输入和图片上传。
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mt-8 w-full max-w-lg">
+                    {functionButtons.slice(0, 4).map((btn) => (
+                      <motion.button
+                        key={btn.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleFunctionClick(btn)}
+                        className="flex items-center gap-3 p-4 rounded-xl
+                          bg-gray-800/50 hover:bg-gray-800/70
+                          backdrop-blur-sm transition-colors duration-200"
+                      >
+                        <span className={`${btn.color} p-2 rounded-lg bg-gray-800`}>
+                          {btn.icon}
+                        </span>
+                        <span className="text-sm text-gray-200">{btn.label}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+              
+              {/* 消息列表部分保持不变 */}
+              <AnimatePresence>
+                {messages.map((message, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className={`flex items-start gap-3 ${
+                      message.role === 'assistant' ? 'justify-start' : 'justify-end'
+                    }`}
+                  >
+                    {message.role === 'assistant' && (
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-purple-500/20">
+                          <Bot className="w-4 h-4 text-purple-400" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                    <div
+                      className={`
+                        max-w-[80%] rounded-lg p-3
+                        ${message.role === 'assistant'
+                          ? 'bg-[#2D2D35] text-gray-200'
+                          : 'bg-purple-600/20 text-gray-100'
+                        }
+                      `}
+                    >
+                      {message.content.map((content, contentIndex) => (
+                        <div key={contentIndex} className="space-y-2">
+                          {content.type === 'image_url' && (
+                            <img
+                              src={content.image_url?.url}
+                              alt="Uploaded content"
+                              className="max-h-[200px] w-auto object-contain rounded"
+                            />
+                          )}
+                          {content.type === 'text' && (
+                            <p className="text-sm leading-relaxed">
+                              {content.text}
+                            </p>
+                          )}
+                        </div>
                       ))}
                     </div>
+                    {message.role === 'user' && (
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-gray-700">
+                          <User className="w-4 h-4 text-gray-400" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+
+          {/* 输入区域 */}
+          <div className="border-t border-gray-800">
+            <div className="max-w-3xl mx-auto p-4">
+              <div className="relative">
+                {/* 图片预览 */}
+                {imageUrl && (
+                  <div className="absolute -top-20 left-0 right-0 h-16 bg-[#2D2D35] rounded-lg p-2 flex items-center gap-2">
+                    <img
+                      src={imageUrl}
+                      alt="Preview"
+                      className="h-full w-auto object-contain rounded"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                      onClick={() => {
+                        setImageUrl('')
+                        setBase64Image('')
+                      }}
+                    >
+                      <X className="h-4 w-4 text-gray-400" />
+                    </Button>
                   </div>
                 )}
-                <AnimatePresence>
-                  {messages.map((message, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className={`flex items-start gap-3 ${
-                        message.role === 'assistant' ? 'justify-start' : 'justify-end'
-                      }`}
-                    >
-                      {message.role === 'assistant' && (
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback className="bg-purple-500/20">
-                            <Bot className="w-4 h-4 text-purple-400" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      <div
-                        className={`
-                          max-w-[80%] rounded-lg p-3
-                          ${message.role === 'assistant'
-                            ? 'bg-[#2D2D35] text-gray-200'
-                            : 'bg-purple-600/20 text-gray-100'
-                          }
-                        `}
-                      >
-                        {message.content.map((content, contentIndex) => (
-                          <div key={contentIndex} className="space-y-2">
-                            {content.type === 'image_url' && (
-                              <img
-                                src={content.image_url?.url}
-                                alt="Uploaded content"
-                                className="max-h-[200px] w-auto object-contain rounded"
-                              />
-                            )}
-                            {content.type === 'text' && (
-                              <p className="text-sm leading-relaxed">
-                                {content.text}
-                              </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      {message.role === 'user' && (
-                        <Avatar className="w-8 h-8">
-                          <AvatarFallback className="bg-gray-700">
-                            <User className="w-4 h-4 text-gray-400" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-                <div ref={messagesEndRef} />
-              </div>
-            </ScrollArea>
 
-            {/* 输入区域 */}
-            <div className="border-t border-gray-800">
-              <div className="max-w-3xl mx-auto p-4">
-                <div className="relative">
-                  {/* 图片预览 */}
-                  {imageUrl && (
-                    <div className="absolute -top-20 left-0 right-0 h-16 bg-[#2D2D35] rounded-lg p-2 flex items-center gap-2">
-                      <img
-                        src={imageUrl}
-                        alt="Preview"
-                        className="h-full w-auto object-contain rounded"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={() => {
-                          setImageUrl('')
-                          setBase64Image('')
-                        }}
-                      >
-                        <X className="h-4 w-4 text-gray-400" />
-                      </Button>
-                    </div>
-                  )}
-
-                  {/* 输入框 */}
-                  <div
-                    className={`
-                      relative rounded-lg bg-[#2D2D35] 
-                      ${isDragging ? 'ring-2 ring-purple-500' : ''}
-                    `}
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={handleDrop}
-                  >
-                    <Textarea
-                      value={inputText}
-                      onChange={(e) => setInputText(e.target.value)}
-                      placeholder={selectedFunction 
-                        ? functionButtons.find(b => b.id === selectedFunction)?.prompt
-                        : "输入问题，或者拖拽图片到这里..."
+                {/* 输入框 */}
+                <div
+                  className={`
+                    relative rounded-lg bg-[#2D2D35] 
+                    ${isDragging ? 'ring-2 ring-purple-500' : ''}
+                  `}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <Textarea
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    placeholder={selectedFunction 
+                      ? functionButtons.find(b => b.id === selectedFunction)?.prompt
+                      : "输入问题，或者拖拽图片到这里..."
+                    }
+                    className="pr-24 min-h-[56px] max-h-32 bg-transparent border-0 
+                      text-gray-200 placeholder:text-gray-500 resize-none
+                      focus:ring-0"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault()
+                        handleSendMessage()
                       }
-                      className="pr-24 min-h-[56px] max-h-32 bg-transparent border-0 
-                        text-gray-200 placeholder:text-gray-500 resize-none
-                        focus:ring-0"
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault()
-                          handleSendMessage()
-                        }
-                      }}
-                    />
-                    <div className="absolute right-2 bottom-2 flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 hover:bg-[#3D3D45]"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        <ImageIcon className="h-4 w-4 text-gray-400" />
-                      </Button>
-                      <Popover open={showImageUrlInput} onOpenChange={setShowImageUrlInput}>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8 hover:bg-[#3D3D45]"
-                          >
-                            <Link className="h-4 w-4 text-gray-400" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80 p-4">
-                          <div className="space-y-2">
-                            <h4 className="font-medium text-sm text-gray-200">输入图片URL</h4>
-                            <Textarea
-                              placeholder="https://example.com/image.jpg"
-                              value={imageUrl}
-                              onChange={(e) => {
-                                setImageUrl(e.target.value)
-                                setBase64Image('')
-                              }}
-                              className="min-h-[80px] bg-[#2D2D35] border-0 text-gray-200 
-                                placeholder:text-gray-500 resize-none"
-                            />
-                            <div className="flex justify-end">
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                onClick={() => setShowImageUrlInput(false)}
-                              >
-                                确定
-                              </Button>
-                            </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 hover:bg-[#3D3D45]"
-                      >
-                        <Mic className="h-4 w-4 text-gray-400" />
-                      </Button>
-                      <div className="relative">
+                    }}
+                  />
+                  <div className="absolute right-2 bottom-2 flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 hover:bg-[#3D3D45]"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <ImageIcon className="h-4 w-4 text-gray-400" />
+                    </Button>
+                    <Popover open={showImageUrlInput} onOpenChange={setShowImageUrlInput}>
+                      <PopoverTrigger asChild>
                         <Button
-                          onClick={handleSendMessage}
-                          disabled={isProcessing || (!imageUrl && !inputText)}
-                          className="h-8 w-8 bg-transparent hover:bg-transparent p-0"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 hover:bg-[#3D3D45]"
                         >
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg opacity-20" />
-                          <Send className="h-4 w-4 text-purple-500 transform rotate-45" />
+                          <Link className="h-4 w-4 text-gray-400" />
                         </Button>
-                      </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm text-gray-200">输入图片URL</h4>
+                          <Textarea
+                            placeholder="https://example.com/image.jpg"
+                            value={imageUrl}
+                            onChange={(e) => {
+                              setImageUrl(e.target.value)
+                              setBase64Image('')
+                            }}
+                            className="min-h-[80px] bg-[#2D2D35] border-0 text-gray-200 
+                              placeholder:text-gray-500 resize-none"
+                          />
+                          <div className="flex justify-end">
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => setShowImageUrlInput(false)}
+                            >
+                              确定
+                            </Button>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 hover:bg-[#3D3D45]"
+                    >
+                      <Mic className="h-4 w-4 text-gray-400" />
+                    </Button>
+                    <div className="relative">
+                      <Button
+                        onClick={handleSendMessage}
+                        disabled={isProcessing || (!imageUrl && !inputText)}
+                        className="h-8 w-8 bg-transparent hover:bg-transparent p-0"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg opacity-20" />
+                        <Send className="h-4 w-4 text-purple-500 transform rotate-45" />
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -546,6 +591,17 @@ export default function VisionAnalysisPage() {
         </div>
       </div>
 
+      {/* 添加全局动画背景 */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-transparent" />
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute w-[500px] h-[500px] top-0 -left-40 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+          <div className="absolute w-[500px] h-[500px] top-0 -right-40 bg-blue-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute w-[500px] h-[500px] bottom-0 left-40 bg-green-500/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+        </div>
+      </div>
+
+      {/* 文件输入保持不变 */}
       <input
         type="file"
         ref={fileInputRef}

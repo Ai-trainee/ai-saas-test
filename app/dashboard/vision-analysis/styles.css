@@ -127,21 +127,10 @@
 .constellation-star {
   position: absolute;
   pointer-events: auto;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   transform-style: preserve-3d;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.constellation-star.fixed {
-  z-index: 100;
-}
-
-.constellation-star.fixed .star-content {
-  border-color: rgba(147, 51, 234, 0.8);
-  box-shadow: 
-    0 0 30px rgba(147, 51, 234, 0.4),
-    0 0 60px rgba(147, 51, 234, 0.2);
 }
 
 .constellation-star::before {
@@ -183,15 +172,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(17, 17, 23, 0.95);
-  border: 2px solid rgba(147, 51, 234, 0.4);
+  background: rgba(17, 17, 23, 0.9);
+  border: 1px solid rgba(147, 51, 234, 0.3);
   border-radius: 50%;
   backdrop-filter: blur(12px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
-    0 0 20px rgba(147, 51, 234, 0.3),
-    0 0 40px rgba(147, 51, 234, 0.1);
-  animation: float 4s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.2);
 }
 
 .star-icon {
@@ -210,7 +196,7 @@
   transform: translateX(-50%) translateY(10px);
   width: max-content;
   padding: 8px 16px;
-  background: rgba(17, 17, 23, 0.9);
+  background: rgba(17, 17, 23, 0.95);
   border: 1px solid rgba(147, 51, 234, 0.3);
   border-radius: 12px;
   backdrop-filter: blur(12px);
@@ -601,251 +587,511 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-/* 重瞳效果 */
-.eye-icon {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  cursor: pointer;
-}
-
-/* 外层光环 */
-.eye-outer {
-  position: absolute;
-  width: 64px;
-  height: 64px;
-  border: 2px solid rgba(147, 51, 234, 0.6);
-  border-radius: 50%;
-  animation: pulse 3s infinite;
-  filter: drop-shadow(0 0 10px rgba(147, 51, 234, 0.4));
-}
-
-.eye-outer::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border: 1px solid rgba(147, 51, 234, 0.3);
-  border-radius: 50%;
-  animation: rotate 10s linear infinite;
-}
-
-.eye-outer::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border: 1px solid rgba(147, 51, 234, 0.2);
-  border-radius: 50%;
-  animation: rotate 15s linear infinite reverse;
-}
-
-/* 内部瞳孔 */
-.eye-inner {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  background: radial-gradient(
-    circle at center,
-    rgba(147, 51, 234, 1) 0%,
-    rgba(147, 51, 234, 0.8) 30%,
-    rgba(147, 51, 234, 0.4) 60%,
-    transparent 100%
-  );
-  border-radius: 50%;
-  transform: translateZ(30px);
-  filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.8));
-  animation: float 4s ease-in-out infinite;
-}
-
-.eye-inner::before {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.4) 40%,
-    transparent 100%
-  );
-  border-radius: 50%;
-  filter: blur(2px);
-}
-
-.eye-inner::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border: 2px solid rgba(147, 51, 234, 0.4);
-  border-radius: 50%;
-  animation: spin 8s linear infinite;
-  opacity: 0.6;
-}
-
-/* 能量光束 */
-.eye-beams {
-  position: absolute;
-  inset: -60px;
-  transform-style: preserve-3d;
-}
-
-.eye-beam {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 600px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgba(147, 51, 234, 0.8) 0%,
-    rgba(147, 51, 234, 0.4) 40%,
-    transparent 100%
-  );
-  transform-origin: left center;
-  filter: blur(2px);
-  opacity: calc(var(--beam-opacity, 0.5) * 0.8);
-}
-
-.eye-beam:nth-child(1) {
-  transform: translate(-50%, -50%) rotate(calc(var(--beam-angle, 0) * 1deg));
-}
-
-.eye-beam:nth-child(2) {
-  transform: translate(-50%, -50%) rotate(calc((var(--beam-angle, 0) + 180) * 1deg));
-}
-
-/* 能量波纹 */
-.eye-ripples {
-  position: absolute;
-  inset: -20px;
-  transform-style: preserve-3d;
-}
-
-.eye-ripple {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(147, 51, 234, 0.3);
-  border-radius: 50%;
-  animation: ripple 4s ease-out infinite;
-}
-
-.eye-ripple:nth-child(2) { animation-delay: -1s; }
-.eye-ripple:nth-child(3) { animation-delay: -2s; }
-.eye-ripple:nth-child(4) { animation-delay: -3s; }
-
-/* 能量粒子 */
-.eye-particles {
-  position: absolute;
-  inset: -40px;
-  transform-style: preserve-3d;
-  pointer-events: none;
-}
-
-.eye-particle {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: rgba(147, 51, 234, 0.6);
-  border-radius: 50%;
-  filter: blur(1px);
-}
-
-/* 威压效果 */
-.eye-pressure {
-  position: absolute;
-  inset: -100px;
-  background: radial-gradient(
-    circle at center,
-    rgba(147, 51, 234, 0.15),
-    transparent 70%
-  );
-  opacity: calc(var(--eye-energy, 0.5) * 0.8);
-  filter: blur(20px);
-  pointer-events: none;
-  animation: pressure-pulse 4s ease-in-out infinite;
-}
-
-/* 动画定义 */
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.1); }
-  to { transform: rotate(360deg) scale(1); }
-}
-
-@keyframes ripple {
+/* 添加字符流星动画 */
+@keyframes character-meteor {
   0% {
-    transform: scale(0.8);
-    opacity: 0.8;
+    transform: translate(0, -100%) rotate(-45deg);
+    opacity: 1;
   }
   100% {
-    transform: scale(2);
+    transform: translate(-200px, 200px) rotate(-45deg);
     opacity: 0;
   }
 }
 
-@keyframes pressure-pulse {
-  0%, 100% {
+.character-meteor {
+  position: fixed;
+  z-index: 1000;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 24px;
+  font-weight: bold;
+  pointer-events: none;
+  text-shadow: 0 0 10px rgba(147, 51, 234, 0.8);
+  animation: character-meteor 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.character-meteor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(to left,
+    rgba(147, 51, 234, 0.8),
+    transparent
+  );
+  transform: translateY(-50%);
+  filter: blur(1px);
+}
+
+/* 眼睛图标 */
+.eye-icon {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-outer {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(147, 51, 234, 0.6);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.eye-inner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.8) 0%,
+    rgba(147, 51, 234, 0.4) 60%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+
+.eye-icon::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.2) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  animation: glow 2s infinite;
+}
+
+/* 增强流星效果 */
+@keyframes meteor-trail {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  20% {
+    width: 120px;
+    opacity: 1;
+  }
+  100% {
+    width: 200px;
+    opacity: 0;
+  }
+}
+
+.character-meteor {
+  position: fixed;
+  z-index: 1000;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 24px;
+  font-weight: bold;
+  pointer-events: none;
+  text-shadow: 
+    0 0 10px rgba(147, 51, 234, 0.8),
+    0 0 20px rgba(147, 51, 234, 0.4),
+    0 0 30px rgba(147, 51, 234, 0.2);
+  animation: character-meteor 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.character-meteor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  height: 2px;
+  background: linear-gradient(to left,
+    rgba(147, 51, 234, 0.8),
+    rgba(147, 51, 234, 0.4),
+    transparent
+  );
+  transform: translateY(-50%);
+  filter: blur(1px);
+  animation: meteor-trail 2s ease-out forwards;
+}
+
+/* 增强星座效果 */
+.constellation-star {
+  position: absolute;
+  pointer-events: auto;
+  width: 40px;
+  height: 40px;
+  transform-style: preserve-3d;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.constellation-star::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.3) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  filter: blur(2px);
+}
+
+.constellation-star:hover::before {
+  opacity: 1;
+  animation: pulse 2s infinite;
+}
+
+.star-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 17, 23, 0.9);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 50%;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 20px rgba(147, 51, 234, 0.2),
+    0 0 40px rgba(147, 51, 234, 0.1);
+}
+
+.constellation-star:hover .star-content {
+  border-color: rgba(147, 51, 234, 0.6);
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 30px rgba(147, 51, 234, 0.3),
+    0 0 60px rgba(147, 51, 234, 0.2);
+}
+
+.constellation-trails {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right,
+    rgba(147, 51, 234, 0.4),
+    rgba(147, 51, 234, 0.2),
+    transparent
+  );
+  transform-origin: left center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  filter: blur(1px);
+}
+
+.constellation-star:hover .constellation-trails {
+  opacity: 1;
+  transform: rotate(var(--trail-angle, 0deg));
+}
+
+/* 鼠标交互效果 */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
     transform: scale(1);
-    opacity: calc(var(--eye-energy, 0.5) * 0.8);
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: calc(var(--eye-energy, 0.5) * 0.4);
+    opacity: 0;
   }
 }
 
-@keyframes particle-float {
-  0%, 100% {
-    transform: translate3d(0, 0, 0);
-  }
-  50% {
-    transform: translate3d(
-      calc(var(--particle-x, 0) * 1px),
-      calc(var(--particle-y, 0) * 1px),
-      calc(var(--particle-z, 0) * 1px)
-    );
-  }
+.mouse-ripple {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.2) 0%,
+    transparent 70%
+  );
+  transform: translate(-50%, -50%);
+  animation: ripple 1s ease-out forwards;
 }
 
-/* 能量状态类 */
-.eye-icon.active .eye-outer {
-  border-color: rgba(147, 51, 234, 0.8);
-  filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.6));
+/* 更新导航栏样式 */
+.cosmic-navbar {
+  position: relative;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(17, 17, 23, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(147, 51, 234, 0.1);
 }
 
-.eye-icon.active .eye-inner {
-  transform: translateZ(40px);
-  filter: drop-shadow(0 0 30px rgba(147, 51, 234, 1));
+.cosmic-logo {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 17, 23, 0.8);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.eye-icon.active .eye-beam {
-  opacity: calc(var(--beam-opacity, 0.5) * 1.2);
-  filter: blur(4px);
+.cosmic-logo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg,
+    rgba(147, 51, 234, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.eye-icon.active .eye-pressure {
-  opacity: calc(var(--eye-energy, 0.5) * 1.2);
-  animation: pressure-pulse 2s ease-in-out infinite;
+.cosmic-logo:hover::before {
+  opacity: 1;
 }
 
-/* 交互反馈 */
-.eye-icon:hover .eye-outer {
-  border-color: rgba(147, 51, 234, 0.7);
-  filter: drop-shadow(0 0 15px rgba(147, 51, 234, 0.5));
+/* 星座能量效果 */
+@keyframes energy-pulse {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0.3; }
 }
 
-.eye-icon:hover .eye-inner {
-  transform: translateZ(35px);
+@keyframes star-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
-.eye-icon:hover .eye-beam {
-  opacity: calc(var(--beam-opacity, 0.5) * 1.1);
+@keyframes star-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.star-energy-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: rgba(147, 51, 234, calc(var(--energy) * 0.8));
+  border-right-color: rgba(147, 51, 234, calc(var(--energy) * 0.6));
+  animation: star-rotate 4s linear infinite;
+}
+
+.star-pulse-ring {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 2px solid rgba(147, 51, 234, calc(var(--energy) * 0.4));
+  animation: energy-pulse calc(2s / var(--energy)) infinite;
+}
+
+.constellation-star {
+  animation: star-bounce 3s ease-in-out infinite;
+  animation-delay: calc(var(--pulse-phase) * -1s);
+}
+
+.constellation-star.fixed {
+  animation: none;
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.4);
+}
+
+.constellation-star:hover .star-content {
+  transform: scale(1.1) rotate(calc(var(--pulse-phase) * 360deg));
+}
+
+/* 星瞳特效 */
+@keyframes eye-scan {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes eye-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes beam-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.eye-icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eye-outer {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(147, 51, 234, 0.6);
+  border-radius: 50%;
+  animation: eye-scan 4s linear infinite;
+}
+
+.eye-inner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 1) 0%,
+    rgba(147, 51, 234, 0.6) 50%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  animation: eye-pulse 2s ease-in-out infinite;
+}
+
+.eye-beam {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(147, 51, 234, 0.1) 60deg,
+    transparent 120deg
+  );
+  animation: beam-rotate 8s linear infinite;
+}
+
+.eye-glow {
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.2) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  filter: blur(8px);
+}
+
+.eye-stars {
+  position: absolute;
+  inset: -10px;
+  background: 
+    radial-gradient(2px 2px at 10px 10px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 20px 20px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 30px 5px, rgba(255, 255, 255, 0.8), transparent),
+    radial-gradient(2px 2px at 5px 30px, rgba(255, 255, 255, 0.8), transparent);
+  animation: star-rotate 10s linear infinite;
+}
+
+/* 增强星座动画 */
+.constellation-star {
+  cursor: pointer;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.star-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.star-icon {
+  position: relative;
+  z-index: 2;
+  animation: float 3s ease-in-out infinite;
+}
+
+.constellation-trails {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(100px + var(--energy) * 100px);
+  height: 2px;
+  background: linear-gradient(to right,
+    rgba(147, 51, 234, calc(var(--energy) * 0.8)),
+    rgba(147, 51, 234, calc(var(--energy) * 0.4)),
+    transparent
+  );
+  transform-origin: left center;
+  transform: rotate(var(--trail-angle));
+  filter: blur(1px);
+  opacity: var(--energy);
+}
+
+/* 星座信息提示 */
+.star-info {
+  position: absolute;
+  left: 50%;
+  top: 120%;
+  transform: translateX(-50%) translateY(0);
+  padding: 12px;
+  background: rgba(17, 17, 23, 0.95);
+  border: 1px solid rgba(147, 51, 234, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.2),
+    0 0 30px rgba(147, 51, 234, 0.2);
+}
+
+.constellation-star:hover .star-info {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(10px);
+}
+
+.star-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 4px;
+}
+
+.star-description {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 200px;
+}
+
+/* 鼠标交互效果 */
+.mouse-trail {
+  position: fixed;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(147, 51, 234, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+  z-index: 9999;
+}
+
+.mouse-trail.active {
+  width: 40px;
+  height: 40px;
+  border-color: rgba(147, 51, 234, 0.6);
 }

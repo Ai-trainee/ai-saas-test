@@ -47,6 +47,8 @@ export default function VisionAnalysisPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [base64Image, setBase64Image] = useState<string>("")
   const [isFirstMessage, setIsFirstMessage] = useState(true)
+  const [promptHint, setPromptHint] = useState("")
+  const [showPromptHint, setShowPromptHint] = useState(false)
 
   const functionButtons = [
     {
@@ -55,7 +57,7 @@ export default function VisionAnalysisPage() {
       description: "AI 生成高质量图片",
       color: "text-emerald-400",
       id: "create-image",
-      prompt: "请为我创建一张图片���要求："
+      prompt: "请为我创建一张图片要求："
     },
     {
       icon: <FileText className="w-4 h-4" />,
@@ -87,7 +89,7 @@ export default function VisionAnalysisPage() {
       description: "个性化护肤方案",
       color: "text-yellow-400",
       id: "beauty",
-      prompt: "请根据图片分析皮肤状况并给出护理建议："
+      prompt: "请根据片分析皮肤状况并给出护理建议："
     },
     {
       icon: <Search className="w-4 h-4" />,
@@ -164,7 +166,12 @@ export default function VisionAnalysisPage() {
 
   const handleFunctionClick = (btn: typeof functionButtons[0]) => {
     setSelectedFunction(btn.id)
-    setInputText(btn.prompt)
+    setInputText("")
+    setPromptHint(btn.prompt)
+    setShowPromptHint(true)
+    setTimeout(() => {
+      setShowPromptHint(false)
+    }, 3000)
   }
 
   const handleNewChat = useCallback(() => {
@@ -188,7 +195,7 @@ export default function VisionAnalysisPage() {
         content: []
       }
 
-      // 如果有文本,添加文本内容
+      // 添加文本内容
       if (inputText) {
         newUserMessage.content.push({
           type: 'text',
@@ -196,7 +203,7 @@ export default function VisionAnalysisPage() {
         })
       }
 
-      // 如果有图片,添加图片
+      // 添加图片内容
       if (imageUrl) {
         newUserMessage.content.push({
           type: 'image_url',
@@ -209,12 +216,7 @@ export default function VisionAnalysisPage() {
       // 更新消息列表
       setMessages(prev => [...prev, newUserMessage])
 
-      // 构建API请求消息
-      const apiMessages = messages.length === 0
-        ? [newUserMessage]
-        : [...messages, newUserMessage]
-
-      // 发送API请求
+      // 构建API请求
       const response = await fetch("https://open.bigmodel.cn/api/paas/v4/chat/completions", {
         method: "POST",
         headers: {
@@ -223,12 +225,15 @@ export default function VisionAnalysisPage() {
         },
         body: JSON.stringify({
           model: "glm-4v-flash",
-          messages: apiMessages,
+          messages: [...messages, newUserMessage],
+          temperature: 0.8,
+          top_p: 0.7,
+          max_tokens: 1024,
         }),
       })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`请求失败: ${response.status}`)
       }
 
       const data = await response.json()
@@ -244,16 +249,6 @@ export default function VisionAnalysisPage() {
         }
         setMessages(prev => [...prev, assistantMessage])
       }
-
-      // 保存聊天历史
-      const history: ChatHistory = {
-        timestamp: Date.now(),
-        title: inputText || '新对话',
-        messages: [...messages, newUserMessage],
-        imageUrl: imageUrl,
-        lastMessage: inputText
-      }
-      await db.saveChatHistory(history)
 
     } catch (error: any) {
       toast({
@@ -425,6 +420,23 @@ export default function VisionAnalysisPage() {
           <div className="cosmic-input-container">
             <div className="max-w-3xl mx-auto p-4">
               <div className="relative">
+                <AnimatePresence>
+                  {showPromptHint && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute -top-12 left-0 right-0 text-center"
+                    >
+                      <span className="inline-block px-4 py-2 bg-purple-500/10 backdrop-blur-sm 
+                        rounded-full text-sm text-purple-200 border border-purple-500/20">
+                        {promptHint}
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                
                 {/* 图片预览 */}
                 {imageUrl && (
                   <motion.div 

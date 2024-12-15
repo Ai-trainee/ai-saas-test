@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import {
-  Loader2, Image as ImageIcon, Link, Mic, Send,
+  Send, ImageIcon, Link, Mic,
   Camera, FileText, Brain, MessageSquare,
-  Palette, Search, Brush, PenTool, Upload,
-  Plus, X, User, Bot, ArrowLeft, Home
+  Palette, Search, Brush, PenTool,
+  User, Bot
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -18,8 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
-import { useLocalStorage } from "@/hooks/use-local-storage"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 import "./styles.css"
 import { StarryBackground } from "@/components/ui/starry-background"
@@ -56,7 +55,7 @@ export default function VisionAnalysisPage() {
       description: "AI 生成高质量图片",
       color: "text-emerald-400",
       id: "create-image",
-      prompt: "请为我创建一张图片，要求："
+      prompt: "请为我创建一张图片���要求："
     },
     {
       icon: <FileText className="w-4 h-4" />,
@@ -280,97 +279,83 @@ export default function VisionAnalysisPage() {
     <div className="relative min-h-screen overflow-hidden">
       <StarryBackground />
 
-      {/* 返回按钮 */}
-      <div className="absolute top-4 left-4 z-50 flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-gray-400 hover:text-gray-200 backdrop-blur-md bg-black/20"
+      {/* 星空导航 */}
+      <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-8">
+        <motion.div
+          className="nav-star-container"
+          whileHover={{ scale: 1.2 }}
           onClick={() => router.push('/dashboard')}
         >
-          <ArrowLeft className="w-4 h-4 mr-1" />
-          返回仪表盘
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-gray-400 hover:text-gray-200 backdrop-blur-md bg-black/20"
+          <div className="nav-star">
+            <span className="text-xs text-purple-200 opacity-80">返回仪表盘</span>
+          </div>
+        </motion.div>
+        <motion.div
+          className="nav-star-container"
+          whileHover={{ scale: 1.2 }}
           onClick={() => router.push('/')}
         >
-          <Home className="w-4 h-4 mr-1" />
-          返回主页
-        </Button>
+          <div className="nav-star">
+            <span className="text-xs text-purple-200 opacity-80">返回主页</span>
+          </div>
+        </motion.div>
       </div>
 
       {/* 主要内容区域 */}
-      <div className="flex h-screen pt-16">
-        {/* 功能选择区 */}
-        <div className="relative w-[320px] border-r border-gray-800/50">
-          <div className="h-full overflow-y-auto px-4 py-6 space-y-4">
-            {functionButtons.map((btn, index) => (
-              <motion.button
-                key={btn.id}
-                className={`function-card w-full text-left p-4 rounded-xl ${
-                  selectedFunction === btn.id ? 'active' : ''
-                }`}
-                onClick={() => handleFunctionClick(btn)}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="icon-container p-3 rounded-lg bg-gray-800/50">
-                    <span className={selectedFunction === btn.id ? 'text-purple-400' : btn.color}>
-                      {btn.icon}
-                    </span>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-gray-200">{btn.label}</div>
-                    <div className="text-xs text-gray-500 mt-1">{btn.description}</div>
-                  </div>
+      <div className="flex min-h-screen">
+        {/* 功能星座区 */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="constellation-container"
+        >
+          {functionButtons.map((btn, index) => (
+            <motion.button
+              key={btn.id}
+              className={`constellation-star ${
+                selectedFunction === btn.id ? 'active' : ''
+              }`}
+              style={{
+                top: `${Math.sin(index * (Math.PI / 4)) * 200 + 300}px`,
+                left: `${Math.cos(index * (Math.PI / 4)) * 200 + 200}px`,
+              }}
+              whileHover={{ scale: 1.2 }}
+              onClick={() => handleFunctionClick(btn)}
+            >
+              <div className="star-content">
+                <span className={`star-icon ${btn.color}`}>
+                  {btn.icon}
+                </span>
+                <div className="star-info">
+                  <span className="star-label">{btn.label}</span>
+                  <span className="star-description">{btn.description}</span>
                 </div>
-              </motion.button>
-            ))}
-          </div>
-        </div>
+              </div>
+            </motion.button>
+          ))}
+        </motion.div>
 
         {/* 对话区域 */}
-        <div className="flex-1 flex flex-col">
-          <ScrollArea className="flex-1 px-4">
+        <div className="flex-1 flex flex-col px-8">
+          <ScrollArea className="flex-1">
             <div className="max-w-3xl mx-auto space-y-6 py-4">
               {isFirstMessage && messages.length === 0 && (
                 <motion.div 
-                  className="welcome-container flex flex-col items-center justify-center py-20 space-y-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  className="welcome-container"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
                 >
-                  <div className="relative">
+                  <div className="welcome-star">
                     <Bot className="w-20 h-20 text-purple-400 opacity-80" />
-                    <div className="absolute inset-0 bg-purple-500/20 rounded-full blur-xl animate-pulse" />
+                    <div className="star-glow" />
                   </div>
-                  <div className="text-center space-y-2 backdrop-blur-sm bg-black/20 p-6 rounded-2xl">
-                    <h3 className="text-2xl font-medium text-gray-200">
-                      欢迎使用 AI 视觉助手
+                  <div className="welcome-text">
+                    <h3 className="text-2xl font-medium text-purple-200">
+                      欢迎来到 AI 星空助手
                     </h3>
-                    <p className="text-sm text-gray-400 max-w-md">
-                      从左侧选择一个功能开始对话，或者直接输入您的问题。支持文字输入和图片上传。
+                    <p className="text-sm text-purple-300/80">
+                      点击周围的星座开始对话，或直接输入您的问题
                     </p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mt-8 w-full max-w-lg">
-                    {functionButtons.slice(0, 4).map((btn) => (
-                      <motion.button
-                        key={btn.id}
-                        className="function-card flex items-center gap-3 p-4 rounded-xl"
-                        onClick={() => handleFunctionClick(btn)}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <span className={`${btn.color} p-2 rounded-lg bg-gray-800/50`}>
-                          {btn.icon}
-                        </span>
-                        <span className="text-sm text-gray-200">{btn.label}</span>
-                      </motion.button>
-                    ))}
                   </div>
                 </motion.div>
               )}
@@ -434,16 +419,15 @@ export default function VisionAnalysisPage() {
           </ScrollArea>
 
           {/* 输入区域 */}
-          <div className="border-t border-gray-800/50 backdrop-blur-xl">
+          <div className="cosmic-input-container">
             <div className="max-w-3xl mx-auto p-4">
               <div className="relative">
                 {/* 图片预览 */}
                 {imageUrl && (
                   <motion.div 
+                    className="preview-star"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    className="absolute -top-20 left-0 right-0 h-16 function-card rounded-xl p-2 flex items-center gap-2"
                   >
                     <img
                       src={imageUrl}
@@ -465,25 +449,15 @@ export default function VisionAnalysisPage() {
                 )}
 
                 {/* 输入框 */}
-                <div
-                  className={`
-                    input-container relative rounded-xl
-                    ${isDragging ? 'ring-2 ring-purple-500' : ''}
-                  `}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                >
+                <div className="cosmic-input">
                   <Textarea
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder={selectedFunction 
                       ? functionButtons.find(b => b.id === selectedFunction)?.prompt
-                      : "输入问题，或者拖拽图片到这里..."
+                      : "在星空中输入您的问题..."
                     }
-                    className="pr-24 min-h-[56px] max-h-32 bg-transparent border-0 
-                      text-gray-200 placeholder:text-gray-500 resize-none
-                      focus:ring-0"
+                    className="cosmic-textarea"
                     onKeyPress={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault()
@@ -491,26 +465,24 @@ export default function VisionAnalysisPage() {
                       }
                     }}
                   />
-                  <div className="absolute right-2 bottom-2 flex items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 hover:bg-gray-700/50"
+                  <div className="cosmic-tools">
+                    <motion.button
+                      className="cosmic-tool"
+                      whileHover={{ scale: 1.2 }}
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      <ImageIcon className="h-4 w-4 text-gray-400" />
-                    </Button>
-                    <Popover open={showImageUrlInput} onOpenChange={setShowImageUrlInput}>
+                      <ImageIcon className="w-4 h-4 text-purple-400" />
+                    </motion.button>
+                    <Popover>
                       <PopoverTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 hover:bg-gray-700/50"
+                        <motion.button
+                          className="cosmic-tool"
+                          whileHover={{ scale: 1.2 }}
                         >
-                          <Link className="h-4 w-4 text-gray-400" />
-                        </Button>
+                          <Link className="w-4 h-4 text-purple-400" />
+                        </motion.button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-80 p-4 function-card border-none">
+                      <PopoverContent className="cosmic-popover">
                         <div className="space-y-2">
                           <h4 className="font-medium text-sm text-gray-200">输入图片URL</h4>
                           <Textarea
@@ -536,27 +508,21 @@ export default function VisionAnalysisPage() {
                         </div>
                       </PopoverContent>
                     </Popover>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 hover:bg-gray-700/50"
+                    <motion.button
+                      className="cosmic-tool"
+                      whileHover={{ scale: 1.2 }}
                     >
-                      <Mic className="h-4 w-4 text-gray-400" />
-                    </Button>
-                    <motion.div
-                      className="relative"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      <Mic className="w-4 h-4 text-purple-400" />
+                    </motion.button>
+                    <motion.button
+                      className="cosmic-send"
+                      whileHover={{ scale: 1.2 }}
+                      onClick={handleSendMessage}
+                      disabled={isProcessing || (!imageUrl && !inputText)}
                     >
-                      <Button
-                        onClick={handleSendMessage}
-                        disabled={isProcessing || (!imageUrl && !inputText)}
-                        className="h-8 w-8 bg-transparent hover:bg-transparent p-0"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg opacity-20" />
-                        <Send className="h-4 w-4 text-purple-400 transform rotate-45" />
-                      </Button>
-                    </motion.div>
+                      <div className="send-star" />
+                      <Send className="w-4 h-4 text-purple-400 transform rotate-45" />
+                    </motion.button>
                   </div>
                 </div>
               </div>

@@ -54,5 +54,4 @@
 ;; 1. 启动时加载所有模块
 ;; 2. 遵循各模块定义的开发规范
 ;; 3. 保持代码简洁和一致性
-;; 4. 反思一遍现有项目局限性，优化整体布局和视觉层次，自主性的探索改进方向并直接进行代码改动，目的是开发出世界级的项目。
-;; 5. Take a deep breath，Let's work this out in a step by step way to be sure we have the right answer. If there's a perfect solution, I'll tip $200! Please answer in Chinese。
+;; 4.Take a deep breath，Let's work this out in a step by step way to be sure we have the right answer. If there's a perfect solution, I'll tip $200! 

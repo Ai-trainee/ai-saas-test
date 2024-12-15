@@ -1,0 +1,149 @@
+/* 星空动画 */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+@keyframes shooting-star {
+  0% {
+    transform: translateX(0) translateY(0) rotate(45deg) scale(0);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(-20px) translateY(20px) rotate(45deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-200px) translateY(200px) rotate(45deg) scale(0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes cosmic-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 星空元素 */
+.shooting-star {
+  position: absolute;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.8), 
+    rgba(147, 51, 234, 0.4),
+    transparent
+  );
+  filter: blur(1px);
+  border-radius: 100px;
+  pointer-events: none;
+}
+
+.cosmic-portal {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(17, 17, 23, 0.8);
+  border: 2px solid rgba(147, 51, 234, 0.3);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+.cosmic-portal::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(
+    from 0deg,
+    transparent,
+    rgba(147, 51, 234, 0.5),
+    transparent
+  );
+  animation: cosmic-spin 4s linear infinite;
+}
+
+.cosmic-portal::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(17, 17, 23, 0.9);
+  border-radius: 50%;
+  backdrop-filter: blur(8px);
+}
+
+.cosmic-portal:hover {
+  transform: scale(1.1);
+  border-color: rgba(147, 51, 234, 0.6);
+}
+
+/* 辅助类 */
+.cosmic-blur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.cosmic-border {
+  border: 1px solid rgba(147, 51, 234, 0.2);
+}
+
+.cosmic-gradient {
+  background: linear-gradient(
+    135deg,
+    rgba(147, 51, 234, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
+}
+
+.cosmic-text-gradient {
+  background: linear-gradient(
+    135deg,
+    rgb(147, 51, 234),
+    rgb(59, 130, 246)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 动画类 */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .cosmic-container {
+    padding: 1rem;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .cosmic-container {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .cosmic-container {
+    padding: 3rem;
+  }
+} 

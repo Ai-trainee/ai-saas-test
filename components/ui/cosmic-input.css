@@ -1,0 +1,439 @@
+/* 输入框容器 */
+.cosmic-input-container {
+  position: relative;
+  padding: 1.5rem;
+  background: rgba(10, 10, 18, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.cosmic-input-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(147, 51, 234, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-input-focused::before {
+  opacity: 1;
+}
+
+/* 输入框包装器 */
+.cosmic-input-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* 文本输入区域 */
+.cosmic-textarea {
+  width: 100%;
+  min-height: 48px;
+  max-height: 200px;
+  padding: 0.75rem 1rem;
+  background: rgba(17, 17, 23, 0.4);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: none;
+  transition: all 0.3s ease;
+}
+
+.cosmic-textarea:focus {
+  outline: none;
+  border-color: rgba(147, 51, 234, 0.3);
+  background: rgba(17, 17, 23, 0.6);
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.1);
+}
+
+.cosmic-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* 工具栏 */
+.cosmic-tools {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* 工具按钮 */
+.cosmic-tool {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(147, 51, 234, 0.08);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 0.5rem;
+  color: rgba(147, 51, 234, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cosmic-tool::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.2),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-tool:hover::before {
+  opacity: 1;
+}
+
+/* 发送按钮 */
+.cosmic-send-button {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(147, 51, 234, 0.15);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 0.5rem;
+  color: rgba(147, 51, 234, 0.8);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  opacity: 0.5;
+  overflow: hidden;
+}
+
+.cosmic-send-button.active {
+  opacity: 1;
+  background: rgba(147, 51, 234, 0.2);
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+.cosmic-send-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.3),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-send-button:hover::before {
+  opacity: 1;
+}
+
+/* 预览区域 */
+.cosmic-preview {
+  position: relative;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgba(17, 17, 23, 0.4);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.cosmic-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-preview:hover::before {
+  opacity: 1;
+}
+
+.cosmic-preview-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.cosmic-preview-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(17, 17, 23, 0.6);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cosmic-preview-close:hover {
+  background: rgba(17, 17, 23, 0.8);
+  border-color: rgba(147, 51, 234, 0.3);
+}
+
+/* 消息样式 */
+.cosmic-message {
+  position: relative;
+  max-width: 80%;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(17, 17, 23, 0.4);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.cosmic-message::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-message:hover::before {
+  opacity: 1;
+}
+
+.cosmic-message-user {
+  margin-left: auto;
+  background: rgba(147, 51, 234, 0.08);
+}
+
+.cosmic-message-assistant {
+  margin-right: auto;
+  background: rgba(17, 17, 23, 0.4);
+}
+
+.cosmic-message-image-container {
+  position: relative;
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.cosmic-message-image {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+}
+
+.cosmic-image-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cosmic-message-image-container:hover .cosmic-image-glow {
+  opacity: 1;
+}
+
+.cosmic-message-text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: pre-wrap;
+}
+
+.cosmic-message-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cosmic-message-stars .cosmic-star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(147, 51, 234, 0.6);
+  border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.cosmic-message-stars .cosmic-star:nth-child(1) {
+  top: 20%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.cosmic-message-stars .cosmic-star:nth-child(2) {
+  top: 50%;
+  right: 15%;
+  animation-delay: 0.5s;
+}
+
+.cosmic-message-stars .cosmic-star:nth-child(3) {
+  bottom: 30%;
+  left: 20%;
+  animation-delay: 1s;
+}
+
+/* 加载动画 */
+.cosmic-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(17, 17, 23, 0.4);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+  width: fit-content;
+}
+
+.cosmic-loading-stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.cosmic-loading-star {
+  width: 4px;
+  height: 4px;
+  background: rgba(147, 51, 234, 0.6);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.cosmic-loading-star:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.cosmic-loading-star:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+.cosmic-loading-text {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 预设提示词星座 */
+.cosmic-prompts-constellation {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.cosmic-prompt-star {
+  position: relative;
+  padding: 0.75rem 1rem;
+  background: rgba(17, 17, 23, 0.4);
+  border: 1px solid rgba(147, 51, 234, 0.15);
+  border-radius: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cosmic-prompt-star::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(147, 51, 234, 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-prompt-star:hover::before {
+  opacity: 1;
+}
+
+.cosmic-prompt-text {
+  position: relative;
+  z-index: 1;
+}
+
+.cosmic-prompt-glow {
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(
+    45deg,
+    rgba(147, 51, 234, 0.1),
+    rgba(59, 130, 246, 0.1)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cosmic-prompt-star:hover .cosmic-prompt-glow {
+  opacity: 1;
+}
+
+/* 动画 */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.5); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.5); opacity: 1; }
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .cosmic-message {
+    max-width: 90%;
+  }
+  
+  .cosmic-prompts-constellation {
+    gap: 0.5rem;
+  }
+  
+  .cosmic-prompt-star {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+} 

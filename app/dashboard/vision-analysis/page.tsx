@@ -156,15 +156,21 @@ export default function VisionAnalysisPage() {
     }
   ]
 
-  // 初始化星座位置
+  // 更新星座位置计算
   useEffect(() => {
-    const positions = functionButtons.map(() => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.2, // 较慢的速度
-      vy: (Math.random() - 0.5) * 0.2,
-      angle: Math.random() * 360
-    }))
+    const containerWidth = 180 // 容器宽度减去padding
+    const containerHeight = 380 // 容器高度减去padding
+    const positions = functionButtons.map((_, index) => {
+      const row = Math.floor(index / 2) // 每行2个星座
+      const col = index % 2
+      return {
+        x: 10 + col * 80, // 水平间距80px
+        y: 10 + row * 80, // 垂直间距80px
+        vx: 0,
+        vy: 0,
+        angle: 0
+      }
+    })
     setStarPositions(positions)
   }, [])
 
@@ -229,65 +235,37 @@ export default function VisionAnalysisPage() {
     const moveStars = () => {
       setStarPositions(prev => prev.map((pos, index) => {
         if (starStates[index]?.isFixed) return pos
-        
-        // 基础物理运动
-        let ax = 0
-        let ay = 0
-        
-        // 与其他星座的相互作用
-        prev.forEach((otherPos, otherIndex) => {
-          if (index === otherIndex) return
-          
-          const dx = otherPos.x - pos.x
-          const dy = otherPos.y - pos.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
-          
-          if (distance < REPULSION_RADIUS) {
-            // 近距离排斥
-            const force = -ATTRACTION_FORCE * (1 - distance / REPULSION_RADIUS)
-            ax += (dx / distance) * force
-            ay += (dy / distance) * force
-          } else {
-            // 远距离吸引
-            const force = ATTRACTION_FORCE * Math.min(1, distance / 1000)
-            ax += (dx / distance) * force
-            ay += (dy / distance) * force
-          }
-        })
-        
-        // 能量影响运动
-        const energy = starStates[index]?.energy ?? 0
-        const energyFactor = 1 + energy * 0.5
-        
-        // 更新速度和位置
-        starVelocities[index].vx = starVelocities[index].vx * DAMPING + ax * energyFactor
-        starVelocities[index].vy = starVelocities[index].vy * DAMPING + ay * energyFactor
-        
-        let newX = pos.x + starVelocities[index].vx
-        let newY = pos.y + starVelocities[index].vy
-        
+
+        // 计算新位置
+        let newX = pos.x + pos.vx
+        let newY = pos.y + pos.vy
+
         // 边界检查
-        if (newX < 0 || newX > window.innerWidth) {
-          starVelocities[index].vx *= -0.8
-          newX = pos.x
+        if (newX < 10) {
+          newX = 10
+          pos.vx *= -0.5 // 碰撞后反弹,减少速度
         }
-        if (newY < 0 || newY > window.innerHeight) {
-          starVelocities[index].vy *= -0.8
-          newY = pos.y
+        if (newX > 140) { // 180 - 40(星座宽度)
+          newX = 140
+          pos.vx *= -0.5
         }
-        
-        // 计算旋转角度
-        const speed = Math.sqrt(
-          starVelocities[index].vx ** 2 + 
-          starVelocities[index].vy ** 2
-        )
-        const newAngle = pos.angle + speed * 2 + Math.sin(starStates[index]?.pulsePhase ?? 0) * 5
-        
+        if (newY < 10) {
+          newY = 10
+          pos.vy *= -0.5
+        }
+        if (newY > 340) { // 380 - 40(星座高度)
+          newY = 340
+          pos.vy *= -0.5
+        }
+
+        // 添加阻尼效果
+        pos.vx *= 0.98
+        pos.vy *= 0.98
+
         return {
           ...pos,
           x: newX,
-          y: newY,
-          angle: newAngle
+          y: newY
         }
       }))
     }
@@ -296,28 +274,10 @@ export default function VisionAnalysisPage() {
     return () => clearInterval(interval)
   }, [starStates, starVelocities])
 
-  // 优化流星效果
-  const createMeteorText = (text: string) => {
-    const chars = text.split('')
-    chars.forEach((char, index) => {
-      setTimeout(() => {
-        const meteor = document.createElement('div')
-        meteor.className = 'character-meteor'
-        meteor.textContent = char
-        
-        // 随机起始位置和角度
-        const startX = Math.random() * window.innerWidth
-        const angle = -45 + (Math.random() - 0.5) * 30 // -60° 到 -30° 之间
-        
-        meteor.style.left = `${startX}px`
-        meteor.style.top = '0'
-        meteor.style.transform = `rotate(${angle}deg)`
-        meteor.style.animationDelay = `${index * 0.1}s`
-        
-        document.body.appendChild(meteor)
-        setTimeout(() => meteor.remove(), 2000)
-      }, index * 100)
-    })
+  // 移除流星效果相关代码
+  const handleFunctionClick = (btn: typeof functionButtons[0]) => {
+    setSelectedFunction(btn.id)
+    setInputText(btn.prompt)
   }
 
   const handleImageUpload = useCallback((file: File) => {
@@ -366,26 +326,6 @@ export default function VisionAnalysisPage() {
       handleImageUpload(file)
     }
   }, [handleImageUpload])
-
-  const handleFunctionClick = (btn: typeof functionButtons[0]) => {
-    setSelectedFunction(btn.id)
-    setInputText(btn.prompt)
-    createMeteorText(btn.prompt)
-    
-    // 为每个字符创建流星效果
-    const chars = btn.prompt.split('')
-    chars.forEach((char, index) => {
-      setTimeout(() => {
-        const meteor = document.createElement('div')
-        meteor.className = 'character-meteor'
-        meteor.textContent = char
-        meteor.style.left = `${Math.random() * 100}%`
-        meteor.style.animationDelay = `${index * 0.1}s`
-        document.body.appendChild(meteor)
-        setTimeout(() => meteor.remove(), 2000)
-      }, index * 100)
-    })
-  }
 
   const handleNewChat = useCallback(() => {
     setMessages([])
@@ -492,7 +432,7 @@ export default function VisionAnalysisPage() {
     return () => clearInterval(interval)
   }, [])
 
-  // 更新导出功能为Markdown格式
+  // 更新导出能为Markdown格式
   const exportChat = async () => {
     setExportLoading(true)
     try {
@@ -561,51 +501,25 @@ export default function VisionAnalysisPage() {
                 key={btn.id}
                 className={`constellation-star ${
                   selectedFunction === btn.id ? 'active' : ''
-                } ${
-                  starStates[index]?.isFixed ? 'fixed' : ''
                 }`}
                 style={{
                   position: 'absolute',
                   top: starPositions[index]?.y ?? 0,
                   left: starPositions[index]?.x ?? 0,
-                  transform: `rotate(${starPositions[index]?.angle ?? 0}deg)`,
-                  '--energy': starStates[index]?.energy ?? 0,
-                  '--pulse-phase': starStates[index]?.pulsePhase ?? 0,
+                  '--index': index,
                 }}
-                onClick={() => {
-                  handleStarClick(index)
-                  handleFunctionClick(btn)
-                }}
-                onMouseEnter={() => handleStarHover(index, true)}
-                onMouseLeave={() => handleStarHover(index, false)}
-                whileHover={{ scale: 1.2 }}
-                animate={{
-                  scale: starStates[index]?.isHovered ? 
-                    [1, 1.1, 1] : 1,
-                  transition: {
-                    duration: 1,
-                    repeat: Infinity,
-                  }
-                }}
+                onClick={() => handleFunctionClick(btn)}
+                whileHover={{ scale: 1.05 }}
               >
                 <div className="star-content">
                   <span className={`star-icon ${btn.color}`}>
                     {btn.icon}
                   </span>
-                  <div className="star-energy-ring" />
-                  <div className="star-pulse-ring" />
                   <div className="star-info">
                     <span className="star-label">{btn.label}</span>
                     <span className="star-description">{btn.description}</span>
                   </div>
                 </div>
-                <div 
-                  className="constellation-trails"
-                  style={{
-                    '--trail-angle': `${starPositions[index]?.angle ?? 0}deg`,
-                    '--energy': starStates[index]?.energy ?? 0,
-                  }}
-                />
               </motion.button>
             ))}
           </div>

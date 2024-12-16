@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, ImagePlus, Eye } from "lucide-react"
+import { Loader2, ImagePlus, Eye, Code } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { VisionServiceCard } from "@/components/vision-service-card"
 
@@ -56,6 +56,14 @@ export default function DashboardPage() {
       limits: "完全免费使用",
       icon: <Eye className="h-4 w-4" />,
       route: "/dashboard/vision-analysis"
+    },
+    {
+      title: "开发提示词生成",
+      description: "基于网站截图智能生成开发提示词,包含项目框架规范和页面功能布局要求",
+      price: null,
+      limits: "完全免费使用",
+      icon: <Code className="h-4 w-4" />,
+      route: "/dashboard/prompt-generation"
     }
   ]
 

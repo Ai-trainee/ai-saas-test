@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { Loader2, ImagePlus, Eye, Code } from "lucide-react"
+import { Loader2, ImagePlus, Eye, Code2 } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { VisionServiceCard } from "@/components/vision-service-card"
 
@@ -58,12 +58,12 @@ export default function DashboardPage() {
       route: "/dashboard/vision-analysis"
     },
     {
-      title: "开发提示词生成",
-      description: "基于网站截图智能生成开发提示词,包含项目框架规范和页面功能布局要求",
+      title: "CopyCoder",
+      description: "上传网站截图,自动生成前端开发提示词,包括组件实现和结构分析",
       price: null,
       limits: "完全免费使用",
-      icon: <Code className="h-4 w-4" />,
-      route: "/dashboard/prompt-generation"
+      icon: <Code2 className="h-4 w-4" />,
+      route: "/dashboard/copycoder"
     }
   ]
 
@@ -77,7 +77,7 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visionServices.map((service, index) => (
             <VisionServiceCard
               key={index}

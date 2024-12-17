@@ -5,7 +5,6 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Navbar } from '@/components/navbar'
 import { Toaster } from '@/components/ui/toaster'
 import { FloatingBot } from '@/components/floating-bot'
-import { PageTransition } from "@/components/page-transition"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +20,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh" suppressHydrationWarning>
-      <head />
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
@@ -29,12 +27,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <PageTransition>
-            <Navbar />
-            {children}
-            <FloatingBot />
-            <Toaster />
-          </PageTransition>
+          <Navbar />
+          {children}
+          <FloatingBot />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

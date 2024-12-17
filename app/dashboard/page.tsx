@@ -3,28 +3,44 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, ImagePlus, Eye, Code2 } from "lucide-react"
-import { motion } from "framer-motion"
-import { useSpring, animated } from "@react-spring/web"
+import { motion, useMotionValue, useTransform } from "framer-motion"
 import { supabase } from "@/lib/supabase"
 import { VisionServiceCard } from "@/components/vision-service-card"
+
+// 定义切割区域的形状
+const sectionShapes = [
+  {
+    clipPath: "polygon(0 0, 100% 0, 85% 100%, 0 85%)",
+    transform: "translateZ(40px) rotateX(-5deg)",
+    gradient: "from-blue-500/20 to-purple-500/20"
+  },
+  {
+    clipPath: "polygon(15% 0, 100% 15%, 100% 100%, 0 85%)",
+    transform: "translateZ(20px) rotateX(5deg)",
+    gradient: "from-purple-500/20 to-pink-500/20"
+  },
+  {
+    clipPath: "polygon(0 15%, 100% 0, 85% 100%, 15% 100%)",
+    transform: "translateZ(60px) rotateX(-8deg)",
+    gradient: "from-pink-500/20 to-blue-500/20"
+  }
+]
 
 export default function DashboardPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-
-  // 视差效果
-  const [{ xy }, set] = useSpring(() => ({ xy: [0, 0] }))
-  const trans = (x: number, y: number) => 
-    `translate3d(${x / 10}px,${y / 10}px,0)`
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
 
   useEffect(() => {
     checkAuth()
     
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-      set({ xy: [e.clientX - window.innerWidth / 2, e.clientY - window.innerHeight / 2] })
+      const x = (e.clientX - window.innerWidth / 2) / 50
+      const y = (e.clientY - window.innerHeight / 2) / 50
+      mouseX.set(x)
+      mouseY.set(y)
     }
     
     window.addEventListener('mousemove', handleMouseMove)
@@ -63,8 +79,7 @@ export default function DashboardPage() {
       price: "￥0.1/次",
       limits: "每天10次免费生成额度", 
       icon: <ImagePlus className="h-4 w-4" />,
-      route: "/dashboard/image-generation",
-      offset: { x: -50, y: 20 }
+      route: "/dashboard/image-generation"
     },
     {
       title: "GLM-4V-Flash视觉分析",
@@ -72,8 +87,7 @@ export default function DashboardPage() {
       price: null,
       limits: "完全免费使用",
       icon: <Eye className="h-4 w-4" />,
-      route: "/dashboard/vision-analysis",
-      offset: { x: 0, y: -30 }
+      route: "/dashboard/vision-analysis"
     },
     {
       title: "CopyCoder", 
@@ -81,54 +95,90 @@ export default function DashboardPage() {
       price: null,
       limits: "完全免费使用",
       icon: <Code2 className="h-4 w-4" />,
-      route: "/dashboard/copycoder",
-      offset: { x: 50, y: 40 }
+      route: "/dashboard/copycoder"
     }
   ]
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-black via-gray-900 to-slate-900">
-      {/* 背景动态效果 */}
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 to-black">
+      {/* 背景网格 */}
+      <div 
+        className="absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          transform: `translate3d(${mouseX.get()}px, ${mouseY.get()}px, 0)`
+        }}
+      />
+
+      {/* 装饰线条 */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,0.7),rgba(0,0,0,0.9))]" />
-        <div className="absolute inset-0" style={{
-          background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59,130,246,0.1) 0%, transparent 70%)`
-        }} />
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
+        <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-transparent via-pink-500/50 to-transparent" />
+        <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-transparent via-blue-500/50 to-transparent" />
       </div>
 
       <div className="container relative mx-auto px-4 py-16">
-        <div className="max-w-6xl mx-auto space-y-16">
+        <div className="max-w-7xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="space-y-4 text-center"
+            className="text-center mb-16 relative"
           >
-            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500">
-              视觉服务
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+            <h1 className="text-6xl font-bold">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+                视觉服务
+              </span>
             </h1>
-            <p className="text-xl text-gray-400">
+            <p className="mt-4 text-xl text-gray-400">
               选择合适的视觉服务,开启您的AI之旅
             </p>
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </motion.div>
 
-          <div className="relative h-[600px]">
-            {visionServices.map((service, index) => (
-              <animated.div
-                key={index}
-                style={{
-                  transform: xy.to((x, y) => trans(x * (index + 1) * 0.1, y * (index + 1) * 0.1)),
-                  position: 'absolute',
-                  left: `calc(50% + ${service.offset.x}px)`,
-                  top: `calc(50% + ${service.offset.y}px)`,
-                  transform: `translate(-50%, -50%) translateZ(${index * 20}px)`,
-                  zIndex: index
-                }}
-                className="w-full max-w-sm"
-              >
-                <VisionServiceCard {...service} />
-              </animated.div>
-            ))}
+          <div className="relative perspective-2000">
+            <motion.div
+              className="relative grid grid-cols-1 md:grid-cols-3 gap-8"
+              style={{
+                transform: `rotateX(${mouseY.get()}deg) rotateY(${mouseX.get()}deg)`,
+                transformStyle: 'preserve-3d'
+              }}
+            >
+              {visionServices.map((service, index) => (
+                <motion.div
+                  key={index}
+                  className="relative"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.2, duration: 0.8 }}
+                  style={{
+                    clipPath: sectionShapes[index].clipPath,
+                    transform: sectionShapes[index].transform
+                  }}
+                >
+                  {/* 区域背景 */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${sectionShapes[index].gradient}`} />
+                  
+                  {/* 装饰边框 */}
+                  <div className="absolute inset-0">
+                    <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                    <div className="absolute top-0 left-0 w-0.5 h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+                    <div className="absolute top-0 right-0 w-0.5 h-full bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+                  </div>
+
+                  <div className="relative">
+                    <VisionServiceCard {...service} />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </div>

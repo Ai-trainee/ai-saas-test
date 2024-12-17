@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import { LucideIcon } from "lucide-react"
 
 interface VisionServiceCardProps {
   title: string
@@ -24,19 +23,26 @@ export function VisionServiceCard({
   return (
     <Link href={route}>
       <motion.div
-        whileHover={{ scale: 1.05, rotateY: 5 }}
-        whileTap={{ scale: 0.95 }}
         className="relative group"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-        {/* 霓虹光效果 */}
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-        
-        <div className="relative flex flex-col p-6 bg-black/40 backdrop-blur-xl rounded-lg border border-white/10 shadow-2xl overflow-hidden">
+        <div className="relative flex flex-col p-6 bg-black/30 rounded-lg border border-white/10 shadow-2xl overflow-hidden backdrop-blur-2xl">
           {/* 背景光效 */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5" />
           
-          {/* 悬浮光效 */}
-          <div className="absolute -inset-px bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/* 高光效果 */}
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500"
+            style={{
+              background: `
+                radial-gradient(
+                  circle at 30% 20%,
+                  rgba(255,255,255,0.2) 0%,
+                  transparent 60%
+                )
+              `
+            }}
+          />
           
           <div className="relative space-y-4">
             {/* 图标和标题 */}

@@ -18,30 +18,76 @@ interface VisionServiceCardProps {
 const SVGFilters = () => (
   <svg className="absolute -z-10" width="0" height="0">
     <defs>
-      <filter id="portal-glow">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+      {/* 增强的发光效果 */}
+      <filter id="card-portal-glow">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
         <feColorMatrix
           values="
-            1 0 0 0 0
-            0 1 0 0 0.5
+            1 0 0 0 0.5
+            0 1 0 0 0.2
             0 0 1 0 1
-            0 0 0 15 -7
+            0 0 0 20 -10
           "
         />
+        <feComposite operator="in" in2="SourceGraphic"/>
+        <feBlend in2="SourceGraphic" mode="screen"/>
       </filter>
-      <filter id="noise">
-        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="3" />
-        <feDisplacementMap in="SourceGraphic" scale="10" />
+
+      {/* 增强的噪声效果 */}
+      <filter id="card-noise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="5" seed="1" />
+        <feDisplacementMap in="SourceGraphic" scale="20" />
       </filter>
+
+      {/* 空间扭曲效果 */}
+      <filter id="card-distortion">
+        <feTurbulence type="turbulence" baseFrequency="0.01" numOctaves="3" seed="2" />
+        <feDisplacementMap in="SourceGraphic" scale="30" />
+        <feGaussianBlur stdDeviation="1" />
+      </filter>
+
+      {/* 能量流动渐变 */}
+      <linearGradient id="card-portal-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#9333EA">
+          <animate
+            attributeName="offset"
+            values="0;0.5;0"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </stop>
+        <stop offset="50%" stopColor="#3B82F6">
+          <animate
+            attributeName="offset"
+            values="0.5;1;0.5"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </stop>
+        <stop offset="100%" stopColor="#9333EA">
+          <animate
+            attributeName="offset"
+            values="1;1.5;1"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </stop>
+      </linearGradient>
     </defs>
   </svg>
 )
 
-// 能量边缘路径
+// 不规则的裂缝路径
 const portalPaths = [
-  "M0,0 C25,-10 75,-10 100,0 C75,10 25,10 0,0",
-  "M0,0 C30,-15 70,-15 100,0 C70,15 30,15 0,0",
-  "M0,0 C20,-8 80,-8 100,0 C80,8 20,8 0,0"
+  `M50,20 
+   C60,30 80,50 50,80 
+   C20,50 40,30 50,20`,
+  `M50,25 
+   C65,35 75,55 50,75 
+   C25,55 35,35 50,25`,
+  `M50,30 
+   C70,40 70,60 50,70 
+   C30,60 30,40 50,30`
 ]
 
 export function VisionServiceCard({
@@ -62,7 +108,7 @@ export function VisionServiceCard({
     // 延迟导航以显示动画
     setTimeout(() => {
       router.push(route)
-    }, 1000)
+    }, 1500)
   }
 
   return (
@@ -71,8 +117,15 @@ export function VisionServiceCard({
       <Link href={route} onClick={handleClick}>
         <motion.div
           ref={cardRef}
-          className="relative group"
-          whileHover={{ scale: 1.02 }}
+          className="relative group perspective-1000"
+          style={{
+            transformStyle: "preserve-3d"
+          }}
+          whileHover={{ 
+            scale: 1.02,
+            rotateX: [-2, 2],
+            rotateY: [-2, 2],
+          }}
           whileTap={{ scale: 0.98 }}
         >
           <div className="relative flex flex-col p-6 bg-black/30 rounded-lg border border-white/10 shadow-2xl overflow-hidden backdrop-blur-2xl">
@@ -139,24 +192,38 @@ export function VisionServiceCard({
                 {/* 能量光圈 */}
                 <motion.div
                   className="absolute inset-0 z-50"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ 
-                    scale: [1, 2, 4, 8],
-                    opacity: [0, 0.5, 0.8, 0]
+                  style={{
+                    transformStyle: "preserve-3d",
+                    perspective: "1000px"
                   }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  transition={{ duration: 1 }}
+                  initial={{ scale: 0, opacity: 0, rotateX: 0, rotateY: 0, z: -100 }}
+                  animate={{ 
+                    scale: [1, 2, 4],
+                    opacity: [0, 0.8, 0],
+                    rotateX: [0, 45, -45],
+                    rotateY: [0, -60, 60],
+                    z: [-100, 0, 100]
+                  }}
+                  exit={{ scale: 0, opacity: 0, z: -100 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
                 >
                   {portalPaths.map((path, index) => (
                     <motion.div
                       key={index}
                       className="absolute inset-0 flex items-center justify-center"
                       style={{
-                        filter: "url(#portal-glow)"
+                        filter: "url(#card-portal-glow)",
+                        transform: `translateZ(${index * 10}px)`,
+                        transformStyle: "preserve-3d"
                       }}
                       animate={{
                         rotate: [0, 360],
-                        scale: [1, 1.1, 1]
+                        scale: [1, 1.2, 1],
+                        filter: [
+                          "url(#card-portal-glow) brightness(1)",
+                          "url(#card-portal-glow) brightness(1.5)",
+                          "url(#card-portal-glow) brightness(1)"
+                        ]
                       }}
                       transition={{
                         duration: 2,
@@ -173,38 +240,104 @@ export function VisionServiceCard({
                         <path
                           d={path}
                           fill="none"
-                          stroke="url(#portal-gradient)"
-                          strokeWidth="0.5"
-                          className="text-purple-500"
+                          stroke="url(#card-portal-gradient)"
+                          strokeWidth="0.8"
+                          style={{
+                            filter: "url(#card-distortion)"
+                          }}
                         />
                       </svg>
                     </motion.div>
                   ))}
+
+                  {/* 粒子效果 */}
+                  <motion.div className="absolute inset-0">
+                    {Array.from({ length: 15 }).map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute w-1 h-1 rounded-full bg-white/50"
+                        style={{
+                          left: `${50 + (Math.random() - 0.5) * 100}%`,
+                          top: `${50 + (Math.random() - 0.5) * 100}%`,
+                        }}
+                        animate={{
+                          scale: [0, 1, 0],
+                          opacity: [0, 1, 0],
+                          x: [0, (Math.random() - 0.5) * 100],
+                          y: [0, (Math.random() - 0.5) * 100],
+                          z: [0, Math.random() * 100]
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          delay: i * 0.1,
+                          ease: "easeInOut"
+                        }}
+                      />
+                    ))}
+                  </motion.div>
                 </motion.div>
 
                 {/* 空间碎片 */}
                 <motion.div
                   className="absolute inset-0 z-40"
+                  style={{
+                    perspective: "1000px",
+                    transformStyle: "preserve-3d"
+                  }}
                   initial={{ scale: 0 }}
                   animate={{ scale: [1, 2, 4] }}
                   exit={{ scale: 0 }}
                   transition={{ duration: 0.8 }}
                 >
-                  {Array.from({ length: 6 }).map((_, index) => (
+                  {Array.from({ length: 8 }).map((_, index) => (
                     <motion.div
                       key={index}
                       className="absolute inset-0"
                       style={{
-                        background: `linear-gradient(${index * 60}deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2))`,
-                        clipPath: `polygon(${50 + Math.cos(index) * 30}% ${50 + Math.sin(index) * 30}%, ${50 + Math.cos(index + 2) * 30}% ${50 + Math.sin(index + 2) * 30}%, ${50 + Math.cos(index + 4) * 30}% ${50 + Math.sin(index + 4) * 30}%)`,
-                        filter: "url(#noise)"
+                        background: `linear-gradient(${index * 45}deg, rgba(147, 51, 234, 0.2), rgba(59, 130, 246, 0.2))`,
+                        clipPath: `polygon(
+                          ${50 + Math.cos(index) * 30}% ${50 + Math.sin(index) * 30}%,
+                          ${50 + Math.cos(index + 2) * 40}% ${50 + Math.sin(index + 2) * 40}%,
+                          ${50 + Math.cos(index + 4) * 30}% ${50 + Math.sin(index + 4) * 30}%
+                        )`,
+                        filter: "url(#card-noise) url(#card-distortion)",
+                        transform: `
+                          rotate3d(
+                            ${Math.cos(index)},
+                            ${Math.sin(index)},
+                            1,
+                            ${index * 45}deg
+                          ) 
+                          translateZ(${index * 10}px)
+                        `,
+                        transformStyle: "preserve-3d"
                       }}
                       animate={{
-                        rotate: [0, 360],
-                        scale: [1, 1.2, 1]
+                        transform: [
+                          `rotate3d(
+                            ${Math.cos(index)},
+                            ${Math.sin(index)},
+                            1,
+                            ${index * 45}deg
+                          ) translateZ(${index * 10}px)`,
+                          `rotate3d(
+                            ${Math.cos(index + 2)},
+                            ${Math.sin(index + 2)},
+                            1,
+                            ${index * 45 + 360}deg
+                          ) translateZ(${index * 20}px)`,
+                          `rotate3d(
+                            ${Math.cos(index)},
+                            ${Math.sin(index)},
+                            1,
+                            ${index * 45}deg
+                          ) translateZ(${index * 10}px)`
+                        ],
+                        opacity: [0.2, 0.4, 0.2]
                       }}
                       transition={{
-                        duration: 1.5,
+                        duration: 2,
                         repeat: Infinity,
                         repeatType: "reverse",
                         delay: index * 0.1
@@ -215,11 +348,18 @@ export function VisionServiceCard({
 
                 {/* 深邃空间背景 */}
                 <motion.div
-                  className="absolute inset-0 z-30 bg-gradient-to-r from-purple-900/50 to-blue-900/50 backdrop-blur-xl"
+                  className="absolute inset-0 z-30 bg-gradient-to-r from-purple-900/50 to-blue-900/50"
+                  style={{
+                    backdropFilter: "blur(24px)",
+                    filter: "url(#card-distortion)"
+                  }}
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: [0, 0.5, 0.8] }}
+                  animate={{ 
+                    opacity: [0, 0.7, 0.9],
+                    scale: [0.8, 1.1, 1]
+                  }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8 }}
+                  transition={{ duration: 1 }}
                 />
               </>
             )}

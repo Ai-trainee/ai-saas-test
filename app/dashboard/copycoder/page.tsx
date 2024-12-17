@@ -129,7 +129,7 @@ export default function CopyCoderPage() {
 
   return (
     <motion.div 
-      className="container mx-auto p-8 min-h-screen flex flex-col items-center justify-center"
+      className="copycoder-container mx-auto p-8 min-h-screen flex flex-col items-center justify-center"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -153,7 +153,7 @@ export default function CopyCoderPage() {
 
         {/* 上传区域 */}
         <motion.div 
-          className={`upload-zone relative border-2 border-dashed rounded-xl p-8 text-center
+          className={`copycoder-upload-zone relative border-2 border-dashed rounded-xl p-8 text-center
             ${dragActive ? 'border-purple-500 bg-purple-500/5' : 'border-purple-500/30'}
             ${error ? 'border-red-500/50' : ''}`}
           variants={itemVariants}
@@ -173,7 +173,7 @@ export default function CopyCoderPage() {
                 <img 
                   src={image} 
                   alt="Preview" 
-                  className="max-h-[400px] mx-auto rounded-lg shadow-lg"
+                  className="copycoder-preview max-h-[400px] mx-auto rounded-lg shadow-lg"
                 />
                 <motion.button
                   className="absolute top-2 right-2 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
@@ -196,7 +196,7 @@ export default function CopyCoderPage() {
                 exit={{ opacity: 0 }}
               >
                 <motion.div 
-                  className="upload-icon w-20 h-20 mx-auto bg-purple-500/10 rounded-full flex items-center justify-center"
+                  className="copycoder-upload-icon w-20 h-20 mx-auto bg-purple-500/10 rounded-full flex items-center justify-center"
                   whileHover={{ scale: 1.05 }}
                 >
                   <Upload className="w-10 h-10 text-purple-500/60" />
@@ -254,7 +254,7 @@ export default function CopyCoderPage() {
                   size="lg"
                   onClick={() => handleGeneratePrompt('component')}
                   disabled={loading}
-                  className="prompt-button"
+                  className="copycoder-button"
                 >
                   生成组件实现提示词
                 </Button>
@@ -265,7 +265,7 @@ export default function CopyCoderPage() {
                   size="lg"
                   onClick={() => handleGeneratePrompt('structure')}
                   disabled={loading}
-                  className="prompt-button"
+                  className="copycoder-button"
                 >
                   生成结构分析提示词
                 </Button>
@@ -282,7 +282,7 @@ export default function CopyCoderPage() {
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="result-container rounded-xl p-6 space-y-4"
+              className="copycoder-result rounded-xl p-6 space-y-4"
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">分析结果</h3>
@@ -347,7 +347,7 @@ export default function CopyCoderPage() {
                   initial="initial"
                   animate="animate"
                 >
-                  <div className="loading-spinner absolute inset-0" />
+                  <div className="copycoder-loading absolute inset-0" />
                   <Loader2 className="w-16 h-16 text-purple-500" />
                 </motion.div>
                 <p className="text-sm text-center text-gray-300">正在分析图片...</p>

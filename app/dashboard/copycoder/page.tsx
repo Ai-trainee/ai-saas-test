@@ -48,6 +48,7 @@ export default function CopyCoderPage() {
   const [result, setResult] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [dragActive, setDragActive] = useState(false)
+  const [copySuccess, setCopySuccess] = useState(false)
 
   // 处理图片上传
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +112,18 @@ export default function CopyCoderPage() {
       console.error(error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  // 处理复制功能
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopySuccess(true)
+      setTimeout(() => setCopySuccess(false), 2000)
+    } catch (err) {
+      console.error('复制失败:', err)
+      setError('复制失败,请重试')
     }
   }
 
@@ -273,15 +286,40 @@ export default function CopyCoderPage() {
             >
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">分析结果</h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    navigator.clipboard.writeText(result)
-                  }}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  复制
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleCopy(result)}
+                    className="relative"
+                  >
+                    {copySuccess ? (
+                      <motion.span
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="text-green-500"
+                      >
+                        已复制
+                      </motion.span>
+                    ) : (
+                      '复制'
+                    )}
+                    {copySuccess && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded"
+                      >
+                        复制成功!
+                      </motion.div>
+                    )}
+                  </Button>
+                </motion.div>
               </div>
               <pre className="whitespace-pre-wrap text-sm">{result}</pre>
             </motion.div>

@@ -230,7 +230,7 @@ export default function VisionAnalysisPage() {
     }
   }, [])
 
-  // 增强星座物理系统
+  // 增强星座物��系统
   useEffect(() => {
     const moveStars = () => {
       setStarPositions(prev => prev.map((pos, index) => {
@@ -440,7 +440,9 @@ export default function VisionAnalysisPage() {
         const role = msg.role === 'assistant' ? '🤖 AI' : '👤 User'
         const content = msg.content.map(c => {
           if (c.type === 'text') return c.text
-          if (c.type === 'image_url') return `![image](${c.image_url.url})`
+          if (c.type === 'image_url' && c.image_url?.url) {
+            return `![image](${c.image_url.url})`
+          }
           return ''
         }).join('\n\n')
         return `### ${role}\n\n${content}\n`

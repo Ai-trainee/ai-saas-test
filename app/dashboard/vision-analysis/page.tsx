@@ -464,8 +464,8 @@ export default function VisionAnalysisPage() {
       })
     } catch (error) {
       toast({
-        title: "导出失败",
-        description: error.message,
+        title: "导出失败", 
+        description: error instanceof Error ? error.message : '未知错误',
         variant: "destructive",
       })
     } finally {
@@ -498,32 +498,36 @@ export default function VisionAnalysisPage() {
         <div className="w-full max-w-4xl mx-auto relative">
           {/* 星座系统 */}
           <div className="constellation-container">
-            {functionButtons.map((btn, index) => (
-              <motion.button
-                key={btn.id}
-                className={`constellation-star ${
-                  selectedFunction === btn.id ? 'active' : ''
-                }`}
-                style={{
-                  position: 'absolute',
-                  top: starPositions[index]?.y ?? 0,
-                  left: starPositions[index]?.x ?? 0,
-                  '--index': index,
-                }}
-                onClick={() => handleFunctionClick(btn)}
-                whileHover={{ scale: 1.05 }}
-              >
-                <div className="star-content">
-                  <span className={`star-icon ${btn.color}`}>
-                    {btn.icon}
-                  </span>
-                  <div className="star-info">
-                    <span className="star-label">{btn.label}</span>
-                    <span className="star-description">{btn.description}</span>
+            {functionButtons.map((btn, index) => {
+              const starStyle = {
+                position: 'absolute',
+                top: starPositions[index]?.y ?? 0,
+                left: starPositions[index]?.x ?? 0,
+                '--index': index,
+              } as const
+
+              return (
+                <motion.button
+                  key={btn.id}
+                  className={`constellation-star ${
+                    selectedFunction === btn.id ? 'active' : ''
+                  }`}
+                  style={starStyle}
+                  onClick={() => handleFunctionClick(btn)}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="star-content">
+                    <span className={`star-icon ${btn.color}`}>
+                      {btn.icon}
+                    </span>
+                    <div className="star-info">
+                      <span className="star-label">{btn.label}</span>
+                      <span className="star-description">{btn.description}</span>
+                    </div>
                   </div>
-                </div>
-              </motion.button>
-            ))}
+                </motion.button>
+              )
+            })}
           </div>
 
           {/* 星瞳导航栏 */}

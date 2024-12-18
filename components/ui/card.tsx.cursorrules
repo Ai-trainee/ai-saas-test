@@ -1,0 +1,61 @@
+<build_and_deployment_guidelines>
+  <development_mode>
+    1. 使用npm run dev进行本地开发
+    2. 保持热重载功能开启以提高开发效率
+    3. 在开发模式下使用更宽松的类型检查
+    4. 定期清理.next缓存目录
+  </development_mode>
+
+  <production_build>
+    1. 在package.json中使用--no-lint参数可跳过lint检查
+    2. 使用NEXT_DISABLE_TYPE_CHECKS=1跳过类型检查
+    3. 使用next.config.js配置构建选项
+    4. 权衡构建速度和代码质量
+  </production_build>
+
+  <dependency_management>
+    1. 所有依赖必须指定确切版本号,避免使用^或~
+    2. package.json和package-lock.json必须同时提交
+    3. 定期更新依赖并进行完整测试
+    4. 使用pnpm/yarn等锁定依赖版本
+    5. 新增依赖时检查版本兼容性
+    6. 保持依赖版本的一致性
+    7. 定期清理未使用的依赖
+  </dependency_management>
+
+  <version_control>
+    1. 每次依赖更新都要创建新的分支
+    2. 更新依赖后进行完整的测试
+    3. 记录依赖更新的原因和影响
+    4. 使用git tag标记重要的版本
+  </version_control>
+
+  <deployment_modes>
+    1. 静态导出(output: 'export')
+       - 适用于纯静态网站
+       - 部署更简单,性能更好
+       - 使用npx serve out启���
+    
+    2. 服务端渲染(默认模式)
+       - 适用于需要服务端功能的应用
+       - 支持动态路由和API
+       - 使用npm start启动
+  </deployment_modes>
+
+  <troubleshooting>
+    1. 依赖问题
+       - 清除node_modules和package-lock.json
+       - 使用npm clean-install重新安装
+       - 检查依赖版本兼容性
+    
+    2. 类型错误
+       - 确保@types包版本匹配
+       - 可临时使用//@ts-ignore
+       - 考虑降级依赖版本
+    
+    3. 构建错误
+       - 检查next.config.js配置
+       - 使用构建参数跳过检查
+       - 保存错误日志以供分析
+  </troubleshooting>
+</build_and_deployment_guidelines> 

@@ -37,7 +37,8 @@ export default function LoginPage() {
           options: {
             data: {
               subscription_tier: "free"
-            }
+            },
+            emailRedirectTo: `${window.location.origin}/auth/callback`
           }
         })
 
@@ -48,14 +49,24 @@ export default function LoginPage() {
           description: "请查看您的邮箱以验证账号"
         })
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password
         })
 
         if (signInError) throw signInError
 
-        // 使用 window.location 而不是 router.push 来确保完全刷新页面
+        // 检查邮箱是否已验证
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user?.email_confirmed_at) {
+          toast({
+            title: "请先验证邮箱",
+            description: "请检查您的邮箱并点击验证链接",
+            variant: "destructive"
+          })
+          return
+        }
+
         window.location.href = '/dashboard'
       }
     } catch (error: any) {

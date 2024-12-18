@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="256" cy="256" r="248" fill="#000000" stroke="#4F46E5" stroke-width="16"/>
+  
+  <!-- AI文字 -->
+  <path d="M144 352L208 160H256L320 352H280L264 304H200L184 352H144ZM212 272H252L232 208L212 272Z" fill="white"/>
+  
+  <!-- 装饰性圆环 -->
+  <circle cx="256" cy="256" r="200" stroke="#4F46E5" stroke-width="4" stroke-dasharray="16 8"/>
+  
+  <!-- 点缀元素 -->
+  <circle cx="128" cy="256" r="8" fill="#4F46E5"/>
+  <circle cx="384" cy="256" r="8" fill="#4F46E5"/>
+  <circle cx="256" cy="128" r="8" fill="#4F46E5"/>
+  <circle cx="256" cy="384" r="8" fill="#4F46E5"/>
+</svg>

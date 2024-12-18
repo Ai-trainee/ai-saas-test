@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 不使用静态导出，保持SSR模式
-  // output: 'export',
+  output: 'export',
   
   // 构建时的优化选项
   eslint: {

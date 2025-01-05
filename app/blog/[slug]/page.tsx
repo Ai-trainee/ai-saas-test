@@ -2,16 +2,24 @@
 
 import { useEffect, useState } from 'react'
 import { notFound } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { CalendarDays, User2, Tag, Share2, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 interface PostContent {
   title: string
   date: string
   content: string
+  author: string
+  tags: string[]
+  readingTime?: string
 }
 
 export default function BlogPost({ params }: { params: { slug: string } }) {
   const [post, setPost] = useState<PostContent | null>(null)
   const [loading, setLoading] = useState(true)
+  const [relatedPosts, setRelatedPosts] = useState<Array<{ slug: string; title: string }>>([])
 
   // 处理HTML内容，优化图片显示
   const processContent = (content: string) => {
@@ -21,13 +29,12 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
       (match, before, src, after) => {
         // 处理视频预览图
         if (before.includes('video_player_tmpl')) {
-          return match; // 保持视频预览图不变
+          return match;
         }
 
         // 处理data-src属性
         const actualSrc = src.includes('data-src') ? src.match(/data-src="([^"]*)"/)?.[1] || src : src;
         
-        // 为图片添加加载失败处理和样式
         return `<img${before}src="${actualSrc}"${after} 
           onerror="this.onerror=null; this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'image-error\\'>图片加载失败</div>')"
           loading="lazy"
@@ -38,6 +45,20 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
     );
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post?.title,
+          text: post?.title,
+          url: window.location.href,
+        })
+      } catch (error) {
+        console.error('Error sharing:', error)
+      }
+    }
+  }
+
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -47,6 +68,14 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         }
         const data = await response.json()
         setPost(data)
+
+        // 获取相关文章
+        const relatedResponse = await fetch('/api/posts')
+        const allPosts = await relatedResponse.json()
+        const related = allPosts
+          .filter((p: any) => p.slug !== params.slug)
+          .slice(0, 3)
+        setRelatedPosts(related)
       } catch (error) {
         console.error('Error fetching post:', error)
         notFound()
@@ -61,13 +90,15 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-24">
-        <div className="animate-pulse">
-          <div className="h-8 bg-muted rounded w-3/4 mb-4"></div>
-          <div className="h-4 bg-muted rounded w-1/4 mb-8"></div>
-          <div className="space-y-4">
-            <div className="h-4 bg-muted rounded"></div>
-            <div className="h-4 bg-muted rounded"></div>
-            <div className="h-4 bg-muted rounded"></div>
+        <div className="max-w-4xl mx-auto">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-3/4"></div>
+            <div className="h-4 bg-muted rounded w-1/4"></div>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded"></div>
+              <div className="h-4 bg-muted rounded"></div>
+              <div className="h-4 bg-muted rounded"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -80,16 +111,96 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
 
   return (
     <div className="container mx-auto px-4 py-24">
-      <article className="prose prose-lg dark:prose-invert mx-auto">
-        <h1>{post.title}</h1>
-        <p className="text-muted-foreground">{post.date}</p>
-        <div 
-          dangerouslySetInnerHTML={{ 
-            __html: processContent(post.content)
-          }}
-          className="mt-8 [&_.image-error]:text-red-500 [&_.image-error]:text-sm [&_.image-error]:mt-2"
-        />
-      </article>
+      <div className="max-w-4xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8"
+        >
+          <Link href="/blog" className="inline-flex items-center text-muted-foreground hover:text-primary mb-8">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            返回文章列表
+          </Link>
+
+          <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+          
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
+            <div className="flex items-center gap-1">
+              <CalendarDays className="h-4 w-4" />
+              {post.date}
+            </div>
+            <div className="flex items-center gap-1">
+              <User2 className="h-4 w-4" />
+              {post.author || 'AI进修生'}
+            </div>
+            {post.readingTime && (
+              <div className="flex items-center gap-1">
+                <Tag className="h-4 w-4" />
+                {post.readingTime}
+              </div>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto"
+              onClick={handleShare}
+            >
+              <Share2 className="h-4 w-4 mr-2" />
+              分享
+            </Button>
+          </div>
+
+          {post.tags && (
+            <div className="flex gap-2 mb-8">
+              {post.tags.map(tag => (
+                <span
+                  key={tag}
+                  className="px-2 py-1 bg-muted rounded-full text-xs"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </motion.div>
+
+        <motion.article
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="prose prose-lg dark:prose-invert mx-auto"
+        >
+          <div 
+            dangerouslySetInnerHTML={{ 
+              __html: processContent(post.content)
+            }}
+            className="mt-8 [&_.image-error]:text-red-500 [&_.image-error]:text-sm [&_.image-error]:mt-2"
+          />
+        </motion.article>
+
+        {relatedPosts.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="mt-16"
+          >
+            <h2 className="text-2xl font-bold mb-4">相关文章</h2>
+            <div className="grid gap-4">
+              {relatedPosts.map((relatedPost) => (
+                <Link
+                  key={relatedPost.slug}
+                  href={`/blog/${relatedPost.slug}`}
+                  className="p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                >
+                  {relatedPost.title}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </div>
 
       <style jsx global>{`
         .image-error {

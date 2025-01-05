@@ -1,20 +1,42 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 不使用静态导出，保持SSR模式
-  //output: 'export',
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+        port: '',
+        pathname: '/**',
+      }
+    ],
+    unoptimized: true,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
 
-  // 构建时的优化选项
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+        ],
+      },
+    ]
+  },
+
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // 可选：如果想跳过类型检查
+    ignoreBuildErrors: true,
   },
-  images: { unoptimized: true },
-
-  // 生产环境的优化
   swcMinify: true,
   reactStrictMode: true,
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

@@ -35,14 +35,33 @@ if (!fs.existsSync(normalizedPath)) {
 const generateSlug = (title) => {
   return title
     .toLowerCase()
-    .replace(/[^a-z0-9\u4e00-\u9fa5]/g, '-') // 保留中文字符
+    .replace(/[^a-z0-9\u4e00-\u9fa5]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
 };
 
+// 处理HTML内容
+const processHtmlContent = (content) => {
+  // 优化图片标签
+  return content.replace(
+    /<img([^>]*)src="([^"]*)"([^>]*)>/g,
+    (match, before, src, after) => {
+      // 添加加载和错误处理属性
+      return `<img${before}src="${src}"${after} 
+        onerror="this.onerror=null; this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'image-error\\'>图片加载失败</div>')"
+        loading="lazy"
+        style="max-width: 100%; height: auto; display: block; margin: 20px auto;"
+      >`;
+    }
+  );
+};
+
 try {
   // 读取文件内容
-  const content = fs.readFileSync(normalizedPath, 'utf8');
+  let content = fs.readFileSync(normalizedPath, 'utf8');
+
+  // 处理HTML内容
+  content = processHtmlContent(content);
 
   // 从HTML中提取标题
   const titleMatch = content.match(/<title>(.*?)<\/title>/);
@@ -52,12 +71,16 @@ try {
   const descMatch = content.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"[^>]*>/);
   const description = descMatch ? descMatch[1] : `${title} - 详细内容`;
 
+  // 从HTML中提取封面图
+  const imageMatch = content.match(/<meta[^>]*property="og:image"[^>]*content="([^"]*)"[^>]*>/);
+  const coverImage = imageMatch ? imageMatch[1] : null;
+
   // 生成slug
   const slug = generateSlug(title);
 
   // 复制文章文件
   const targetHtmlPath = path.join(POSTS_DIR, `${slug}.html`);
-  fs.copyFileSync(normalizedPath, targetHtmlPath);
+  fs.writeFileSync(targetHtmlPath, content);
 
   // 创建元数据
   const metadata = {
@@ -65,7 +88,8 @@ try {
     date: new Date().toISOString().split('T')[0],
     excerpt: description,
     author: 'Aitrainee',
-    slug
+    slug,
+    coverImage
   };
 
   // 保存元数据
@@ -76,12 +100,15 @@ try {
   console.log('文章信息：');
   console.log(`- 标题：${title}`);
   console.log(`- Slug：${slug}`);
+  console.log(`- 封面图：${coverImage || '无'}`);
   console.log('\n文件位置：');
   console.log(`- HTML：${targetHtmlPath}`);
   console.log(`- 元数据：${metadataPath}`);
   console.log('\n访问地址：');
   console.log(`- http://localhost:3000/blog/${slug}`);
-  console.log('\n提示：请确保开发服务器正在运行(npm run dev)\n');
+  console.log('\n提示：');
+  console.log('1. 请确保开发服务器正在运行(npm run dev)');
+  console.log('2. 如果文章包含外部图片，请确保在next.config.js中配置了对应的域名\n');
 
 } catch (error) {
   console.error('\n❌ 处理文章时出错：');

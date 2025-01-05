@@ -2,12 +2,13 @@
 
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { ImagePlus, Eye } from "lucide-react"
+import { ImagePlus, Eye, BookOpen, Bot } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 
 export function NavMenu() {
@@ -24,27 +25,44 @@ export function NavMenu() {
       name: "GLM-4V-Flash视觉分析",
       icon: <Eye className="h-4 w-4" />,
       route: "/dashboard/vision-analysis",
+    },
+    {
+      type: "separator"
+    },
+    {
+      name: "技术博客",
+      icon: <BookOpen className="h-4 w-4" />,
+      route: "/blog",
+    },
+    {
+      name: "AI学习资源",
+      icon: <Bot className="h-4 w-4" />,
+      route: "/resources",
     }
   ]
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">AI工具</Button>
+        <Button variant="ghost">AI资源</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {services.map((service) => (
-          <DropdownMenuItem
-            key={service.route}
-            className="flex items-center gap-2"
-            onClick={() => {
-              router.push(service.route)
-              router.refresh()
-            }}
-          >
-            {service.icon}
-            <span>{service.name}</span>
-          </DropdownMenuItem>
+        {services.map((service, index) => (
+          service.type === "separator" ? (
+            <DropdownMenuSeparator key={index} />
+          ) : (
+            <DropdownMenuItem
+              key={service.route}
+              className="flex items-center gap-2"
+              onClick={() => {
+                router.push(service.route)
+                router.refresh()
+              }}
+            >
+              {service.icon}
+              <span>{service.name}</span>
+            </DropdownMenuItem>
+          )
         ))}
       </DropdownMenuContent>
     </DropdownMenu>

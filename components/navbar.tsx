@@ -73,6 +73,9 @@ export function Navbar() {
             <Link href="/applications" className="text-sm font-medium hover:text-primary transition-colors">
               AI应用
             </Link>
+            <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
+              AI进修生博客
+            </Link>
             <Link href="/news" className="text-sm font-medium hover:text-primary transition-colors">
               每日AI资讯
             </Link>

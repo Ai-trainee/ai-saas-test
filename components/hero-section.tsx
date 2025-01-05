@@ -21,25 +21,27 @@ export function HeroSection() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
-          #1 AI学习助手
+          专业的AI学习平台
         </div>
 
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          AI进修生是你的学习伙伴
+          AI进修生是你的AI学习与成长伙伴
         </h1>
         
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          使用我们的AI工具 - 文本优化、智能对话、论文助手等，轻松提升学习效率，突破AI检测。
+          探索AI技术前沿，获取实用工具与专业知识。从技术博客到AI工具，从学习资源到专业咨询，助你在AI时代脱颖而出。
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Button asChild size="lg" className="text-lg">
             <Link href="/login">
-              免费开始使用 →
+              立即开始学习 →
             </Link>
           </Button>
-          <Button variant="outline" size="lg" className="text-lg">
-            查看演示
+          <Button asChild variant="outline" size="lg" className="text-lg">
+            <Link href="/blog">
+              浏览技术博客
+            </Link>
           </Button>
         </div>
 
@@ -47,17 +49,17 @@ export function HeroSection() {
           <div className="flex flex-col items-center">
             <Users className="h-6 w-6 mb-2" />
             <div className="text-2xl font-bold">120万+</div>
-            <div className="text-sm">学生用户</div>
+            <div className="text-sm">学习者</div>
           </div>
           <div className="flex flex-col items-center">
             <Zap className="h-6 w-6 mb-2" />
             <div className="text-2xl font-bold">99.9%</div>
-            <div className="text-sm">成功率</div>
+            <div className="text-sm">学习满意度</div>
           </div>
           <div className="flex flex-col items-center">
             <Bot className="h-6 w-6 mb-2" />
             <div className="text-2xl font-bold">12+</div>
-            <div className="text-sm">AI模型</div>
+            <div className="text-sm">AI能力</div>
           </div>
         </div>
       </motion.div>

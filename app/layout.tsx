@@ -9,8 +9,8 @@ import { FloatingBot } from '@/components/floating-bot'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AI进修生 - 你的学习伙伴',
-  description: '使用AI工具提升你的学习效率',
+  title: 'AI进修生 - 你的AI学习与成长伙伴',
+  description: '专业的AI学习平台，提供AI工具、技术博客、学习资源和咨询服务。我们致力于帮助用户掌握AI技术，提升学习效率，实现个人成长。',
 }
 
 export default function RootLayout({

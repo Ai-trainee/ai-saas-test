@@ -35,7 +35,7 @@ export default function BlogPage() {
         const response = await fetch('/api/posts')
         const data = await response.json()
         setPosts(data)
-        
+
         const tags = Array.from(new Set(data.flatMap((post: Post) => post.tags || []))) as string[]
         setAllTags(tags)
       } catch (error) {
@@ -48,8 +48,8 @@ export default function BlogPage() {
 
   const filteredPosts = posts
     .filter(post => !selectedTag || post.tags?.includes(selectedTag))
-    .filter(post => 
-      searchQuery === "" || 
+    .filter(post =>
+      searchQuery === "" ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
     )
@@ -80,11 +80,11 @@ export default function BlogPage() {
         </script>
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
-        <motion.div 
+      <div className="min-h-screen bg-white">
+        <motion.div
           ref={headerRef}
           style={{ opacity: headerOpacity }}
-          className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b"
+          className="sticky top-0 z-10 bg-white/80 backdrop-blur-lg border-b border-gray-100 shadow-sm"
         >
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-6xl mx-auto">
@@ -94,21 +94,21 @@ export default function BlogPage() {
                 transition={{ duration: 0.5 }}
                 className="text-center"
               >
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/50">
+                <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                   AI进修生博客
                 </h1>
-                <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
                   探索AI技术前沿，分享实践经验，助力学习成长
                 </p>
               </motion.div>
 
               <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
                 <div className="relative w-full md:w-96">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
                     type="search"
                     placeholder="搜索文章..."
-                    className="pl-10"
+                    className="pl-10 border-gray-200 focus:border-gray-300 focus:ring-gray-300"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
@@ -117,11 +117,10 @@ export default function BlogPage() {
                 <div className="flex flex-wrap gap-2 justify-center md:justify-end">
                   <button
                     onClick={() => setSelectedTag(null)}
-                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                      !selectedTag
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted hover:bg-muted/80'
-                    }`}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${!selectedTag
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
                   >
                     全部
                   </button>
@@ -129,11 +128,10 @@ export default function BlogPage() {
                     <button
                       key={tag}
                       onClick={() => setSelectedTag(tag)}
-                      className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                        selectedTag === tag
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted hover:bg-muted/80'
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm transition-colors ${selectedTag === tag
+                        ? 'bg-gray-900 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
                     >
                       {tag}
                     </button>
@@ -144,9 +142,9 @@ export default function BlogPage() {
           </div>
         </motion.div>
 
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-12">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post, index) => (
                 <motion.div
                   key={post.slug}
@@ -155,7 +153,7 @@ export default function BlogPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
                   <Link href={`/blog/${post.slug}`}>
-                    <Card className="group h-full hover:shadow-lg transition-all duration-300 overflow-hidden bg-gradient-to-br from-card to-card/50 border border-card-border/50">
+                    <Card className="group h-full hover:shadow-md transition-all duration-300 overflow-hidden bg-white border-gray-100">
                       {post.coverImage && (
                         <div className="relative h-48 overflow-hidden">
                           <Image
@@ -166,8 +164,8 @@ export default function BlogPage() {
                           />
                         </div>
                       )}
-                      <CardHeader>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-center gap-4 text-sm text-gray-500 mb-2">
                           <div className="flex items-center gap-1">
                             <CalendarDays className="h-4 w-4" />
                             {post.date}
@@ -183,24 +181,24 @@ export default function BlogPage() {
                             </div>
                           )}
                         </div>
-                        <CardTitle className="group-hover:text-primary transition-colors line-clamp-2">
+                        <CardTitle className="text-xl font-semibold text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2">
                           {post.title}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-muted-foreground mb-4 line-clamp-3">{post.excerpt}</p>
+                        <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex gap-2 flex-wrap">
                             {post.tags?.map(tag => (
                               <span
                                 key={tag}
-                                className="px-2 py-1 bg-muted rounded-full text-xs"
+                                className="px-2 py-1 bg-gray-50 text-gray-600 rounded-full text-xs"
                               >
                                 {tag}
                               </span>
                             ))}
                           </div>
-                          <ArrowRight className="h-5 w-5 text-primary opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
+                          <ArrowRight className="h-5 w-5 text-gray-400 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all" />
                         </div>
                       </CardContent>
                     </Card>

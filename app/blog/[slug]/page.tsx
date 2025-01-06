@@ -33,7 +33,6 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
   const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.95])
 
-  // 处理HTML内容，优化图片显示
   const processContent = (content: string) => {
     return content.replace(
       /<img([^>]*)src="([^"]*)"([^>]*)>/g,
@@ -78,7 +77,6 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         const data = await response.json()
         setPost(data)
 
-        // 获取相关文章
         const relatedResponse = await fetch('/api/posts')
         const allPosts = await relatedResponse.json()
         const related = allPosts
@@ -98,17 +96,17 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-24">
           <div className="max-w-4xl mx-auto">
             <div className="animate-pulse space-y-8">
-              <div className="h-8 bg-muted rounded w-3/4"></div>
-              <div className="h-4 bg-muted rounded w-1/4"></div>
-              <div className="h-64 bg-muted rounded-lg"></div>
+              <div className="h-8 bg-gray-100 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-100 rounded w-1/4"></div>
+              <div className="h-64 bg-gray-100 rounded-lg"></div>
               <div className="space-y-4">
-                <div className="h-4 bg-muted rounded"></div>
-                <div className="h-4 bg-muted rounded"></div>
-                <div className="h-4 bg-muted rounded w-2/3"></div>
+                <div className="h-4 bg-gray-100 rounded"></div>
+                <div className="h-4 bg-gray-100 rounded"></div>
+                <div className="h-4 bg-gray-100 rounded w-2/3"></div>
               </div>
             </div>
           </div>
@@ -151,7 +149,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         </script>
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-24">
           <div className="max-w-4xl mx-auto">
             <motion.div
@@ -160,7 +158,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               transition={{ duration: 0.5 }}
               className="mb-8"
             >
-              <Link href="/blog" className="inline-flex items-center text-muted-foreground hover:text-primary mb-8 group">
+              <Link href="/blog" className="inline-flex items-center text-gray-500 hover:text-gray-900 mb-8 group">
                 <ArrowLeft className="h-4 w-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
                 返回文章列表
               </Link>
@@ -168,7 +166,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               {post.coverImage && (
                 <motion.div
                   style={{ opacity, scale }}
-                  className="relative h-[40vh] mb-8 rounded-xl overflow-hidden"
+                  className="relative h-[40vh] mb-8 rounded-xl overflow-hidden shadow-lg"
                 >
                   <Image
                     src={post.coverImage}
@@ -180,11 +178,11 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 </motion.div>
               )}
 
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/50">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                 {post.title}
               </h1>
               
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
                 <div className="flex items-center gap-1">
                   <CalendarDays className="h-4 w-4" />
                   {post.date}
@@ -202,7 +200,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="ml-auto"
+                  className="ml-auto text-gray-500 hover:text-gray-900"
                   onClick={handleShare}
                 >
                   <Share2 className="h-4 w-4 mr-2" />
@@ -215,7 +213,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                   {post.tags.map(tag => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+                      className="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm"
                     >
                       {tag}
                     </span>
@@ -229,7 +227,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="prose prose-lg dark:prose-invert mx-auto"
+              className="prose prose-lg mx-auto"
             >
               <div 
                 dangerouslySetInnerHTML={{ 
@@ -244,9 +242,9 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-16 border-t pt-16"
+                className="mt-16 border-t border-gray-100 pt-16"
               >
-                <h2 className="text-2xl font-bold mb-8">相关文章</h2>
+                <h2 className="text-2xl font-bold mb-8 text-gray-900">相关文章</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {relatedPosts.map((relatedPost) => (
                     <Link
@@ -254,7 +252,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                       href={`/blog/${relatedPost.slug}`}
                       className="group"
                     >
-                      <div className="relative h-40 mb-4 rounded-lg overflow-hidden">
+                      <div className="relative h-40 mb-4 rounded-lg overflow-hidden shadow-sm">
                         {relatedPost.coverImage ? (
                           <Image
                             src={relatedPost.coverImage}
@@ -263,10 +261,10 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                             className="object-cover transform group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
-                          <div className="absolute inset-0 bg-primary/10" />
+                          <div className="absolute inset-0 bg-gray-50" />
                         )}
                       </div>
-                      <h3 className="font-semibold group-hover:text-primary transition-colors line-clamp-2">
+                      <h3 className="font-semibold text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2">
                         {relatedPost.title}
                       </h3>
                     </Link>
@@ -312,50 +310,63 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           background-color: transparent !important;
         }
         .prose {
-          color: inherit;
+          color: #374151;
         }
         .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-          color: inherit;
+          color: #111827;
           font-weight: 600;
           margin-top: 2em;
           margin-bottom: 1em;
         }
         .prose p, .prose span {
-          color: inherit;
+          color: #374151;
           line-height: 1.8;
         }
         .prose a {
-          color: var(--primary);
+          color: #2563eb;
           text-decoration: none;
-          border-bottom: 1px solid var(--primary);
+          border-bottom: 1px solid #2563eb;
         }
         .prose a:hover {
           opacity: 0.8;
         }
         .prose blockquote {
-          border-left-color: var(--primary);
-          background-color: var(--primary-foreground);
+          border-left: 4px solid #2563eb;
+          background-color: #f3f4f6;
           padding: 1rem;
           border-radius: 0.5rem;
+          color: #4b5563;
+          margin: 1.5em 0;
         }
         .prose code {
-          background-color: var(--muted);
+          background-color: #f3f4f6;
           padding: 0.2em 0.4em;
           border-radius: 0.25rem;
           font-size: 0.875em;
+          color: #2563eb;
         }
         .prose pre {
-          background-color: var(--muted);
+          background-color: #1e293b;
+          color: #e2e8f0;
           padding: 1rem;
           border-radius: 0.5rem;
           overflow-x: auto;
+          margin: 1.5em 0;
+        }
+        .prose pre code {
+          background-color: transparent;
+          color: inherit;
+          padding: 0;
+          border-radius: 0;
         }
         .prose ul, .prose ol {
           padding-left: 1.5em;
+          margin: 1em 0;
         }
         .prose li {
           margin-top: 0.5em;
           margin-bottom: 0.5em;
+          color: #374151;
         }
         .prose table {
           width: 100%;
@@ -363,13 +374,17 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           margin: 2em 0;
         }
         .prose th, .prose td {
-          border: 1px solid var(--border);
+          border: 1px solid #e5e7eb;
           padding: 0.75em;
           text-align: left;
         }
         .prose th {
-          background-color: var(--muted);
+          background-color: #f9fafb;
           font-weight: 600;
+          color: #111827;
+        }
+        .prose td {
+          color: #374151;
         }
       `}</style>
     </>

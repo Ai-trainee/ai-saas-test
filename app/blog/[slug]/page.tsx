@@ -42,7 +42,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         }
 
         const actualSrc = src.includes('data-src') ? src.match(/data-src="([^"]*)"/)?.[1] || src : src;
-        
+
         return `<img${before}src="${actualSrc}"${after} 
           onerror="this.onerror=null; this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=\\'image-error\\'>图片加载失败</div>')"
           loading="lazy"
@@ -181,7 +181,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
                 {post.title}
               </h1>
-              
+
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
                 <div className="flex items-center gap-1">
                   <CalendarDays className="h-4 w-4" />
@@ -229,8 +229,8 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="prose prose-lg mx-auto"
             >
-              <div 
-                dangerouslySetInnerHTML={{ 
+              <div
+                dangerouslySetInnerHTML={{
                   __html: processContent(post.content)
                 }}
                 className="mt-8 [&_.image-error]:text-red-500 [&_.image-error]:text-sm [&_.image-error]:mt-2"

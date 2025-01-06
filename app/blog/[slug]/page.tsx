@@ -96,17 +96,17 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white">
+      <div className="blog-container">
         <div className="container mx-auto px-4 py-24">
           <div className="max-w-4xl mx-auto">
             <div className="animate-pulse space-y-8">
-              <div className="h-8 bg-gray-100 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-100 rounded w-1/4"></div>
-              <div className="h-64 bg-gray-100 rounded-lg"></div>
+              <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-1/4"></div>
+              <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
               <div className="space-y-4">
-                <div className="h-4 bg-gray-100 rounded"></div>
-                <div className="h-4 bg-gray-100 rounded"></div>
-                <div className="h-4 bg-gray-100 rounded w-2/3"></div>
+                <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-2/3"></div>
               </div>
             </div>
           </div>
@@ -149,16 +149,16 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
         </script>
       </Head>
 
-      <div className="min-h-screen bg-white">
-        <div className="container mx-auto px-4 py-24">
+      <div className="blog-container">
+        <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="mb-8"
+              className="mb-12"
             >
-              <Link href="/blog" className="inline-flex items-center text-gray-500 hover:text-gray-900 mb-8 group">
+              <Link href="/blog" className="inline-flex items-center text-gray-500 hover:text-gray-900 mb-12 group">
                 <ArrowLeft className="h-4 w-4 mr-2 transform group-hover:-translate-x-1 transition-transform" />
                 返回文章列表
               </Link>
@@ -166,7 +166,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               {post.coverImage && (
                 <motion.div
                   style={{ opacity, scale }}
-                  className="relative h-[40vh] mb-8 rounded-xl overflow-hidden shadow-lg"
+                  className="relative h-[50vh] mb-12 rounded-2xl overflow-hidden shadow-xl"
                 >
                   <Image
                     src={post.coverImage}
@@ -178,21 +178,21 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 </motion.div>
               )}
 
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 tracking-tight leading-tight">
                 {post.title}
               </h1>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-4">
-                <div className="flex items-center gap-1">
+              
+              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 mb-8">
+                <div className="flex items-center gap-2">
                   <CalendarDays className="h-4 w-4" />
                   {post.date}
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2">
                   <User2 className="h-4 w-4" />
                   {post.author || 'AI进修生'}
                 </div>
                 {post.readingTime && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4" />
                     {post.readingTime}
                   </div>
@@ -209,11 +209,11 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               </div>
 
               {post.tags && (
-                <div className="flex gap-2 mb-8">
+                <div className="flex gap-2 mb-12">
                   {post.tags.map(tag => (
                     <span
                       key={tag}
-                      className="px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-sm"
+                      className="blog-tag"
                     >
                       {tag}
                     </span>
@@ -227,7 +227,7 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="prose prose-lg mx-auto"
+              className="blog-content prose prose-lg max-w-none"
             >
               <div
                 dangerouslySetInnerHTML={{
@@ -242,31 +242,35 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-16 border-t border-gray-100 pt-16"
+                className="mt-24 border-t border-gray-100 pt-16"
               >
-                <h2 className="text-2xl font-bold mb-8 text-gray-900">相关文章</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <h2 className="text-3xl font-bold mb-12 text-gray-900">相关文章</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {relatedPosts.map((relatedPost) => (
                     <Link
                       key={relatedPost.slug}
                       href={`/blog/${relatedPost.slug}`}
                       className="group"
                     >
-                      <div className="relative h-40 mb-4 rounded-lg overflow-hidden shadow-sm">
-                        {relatedPost.coverImage ? (
-                          <Image
-                            src={relatedPost.coverImage}
-                            alt={relatedPost.title}
-                            fill
-                            className="object-cover transform group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="absolute inset-0 bg-gray-50" />
-                        )}
-                      </div>
-                      <h3 className="font-semibold text-gray-900 group-hover:text-gray-700 transition-colors line-clamp-2">
-                        {relatedPost.title}
-                      </h3>
+                      <article className="blog-card h-full flex flex-col">
+                        <div className="relative h-40 overflow-hidden rounded-t-lg">
+                          {relatedPost.coverImage ? (
+                            <Image
+                              src={relatedPost.coverImage}
+                              alt={relatedPost.title}
+                              fill
+                              className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-gray-50" />
+                          )}
+                        </div>
+                        <div className="flex-1 p-6">
+                          <h3 className="blog-card-title group-hover:text-blue-600 transition-colors duration-200">
+                            {relatedPost.title}
+                          </h3>
+                        </div>
+                      </article>
                     </Link>
                   ))}
                 </div>
@@ -282,109 +286,117 @@ export default function BlogPost({ params }: { params: { slug: string } }) {
           font-size: 0.875rem;
           margin-top: 0.5rem;
           text-align: center;
-          padding: 0.5rem;
+          padding: 0.75rem;
           background-color: #fee2e2;
-          border-radius: 0.375rem;
-        }
-        img {
-          max-width: 100%;
-          height: auto;
-          display: block;
-          margin: 20px auto;
           border-radius: 0.5rem;
         }
-        .rich_pages {
-          max-width: 100% !important;
-          height: auto !important;
-        }
-        .rich_pages img {
-          max-width: 100% !important;
-          height: auto !important;
-        }
-        .rich_pages.wxw-img {
-          width: auto !important;
-          height: auto !important;
-          object-fit: contain !important;
-        }
-        .prose * {
-          background-color: transparent !important;
-        }
-        .prose {
+        .blog-content {
+          font-size: 1.125rem;
+          line-height: 1.8;
           color: #374151;
         }
-        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+        .blog-content > * + * {
+          margin-top: 1.5em;
+        }
+        .blog-content h1,
+        .blog-content h2,
+        .blog-content h3,
+        .blog-content h4,
+        .blog-content h5,
+        .blog-content h6 {
           color: #111827;
           font-weight: 600;
+          line-height: 1.3;
           margin-top: 2em;
           margin-bottom: 1em;
         }
-        .prose p, .prose span {
-          color: #374151;
-          line-height: 1.8;
+        .blog-content h1 {
+          font-size: 2.25em;
         }
-        .prose a {
+        .blog-content h2 {
+          font-size: 1.875em;
+        }
+        .blog-content h3 {
+          font-size: 1.5em;
+        }
+        .blog-content p {
+          margin: 1.5em 0;
+        }
+        .blog-content a {
           color: #2563eb;
           text-decoration: none;
           border-bottom: 1px solid #2563eb;
+          transition: all 0.2s ease;
         }
-        .prose a:hover {
-          opacity: 0.8;
+        .blog-content a:hover {
+          color: #1d4ed8;
+          border-bottom-color: #1d4ed8;
         }
-        .prose blockquote {
+        .blog-content blockquote {
           border-left: 4px solid #2563eb;
-          background-color: #f3f4f6;
-          padding: 1rem;
+          background-color: #f8fafc;
+          padding: 1.5rem;
+          margin: 2em 0;
           border-radius: 0.5rem;
+          font-style: italic;
           color: #4b5563;
-          margin: 1.5em 0;
         }
-        .prose code {
-          background-color: #f3f4f6;
+        .blog-content code {
+          background-color: #f1f5f9;
+          color: #2563eb;
           padding: 0.2em 0.4em;
           border-radius: 0.25rem;
           font-size: 0.875em;
-          color: #2563eb;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         }
-        .prose pre {
+        .blog-content pre {
           background-color: #1e293b;
           color: #e2e8f0;
-          padding: 1rem;
+          padding: 1.5rem;
           border-radius: 0.5rem;
           overflow-x: auto;
-          margin: 1.5em 0;
+          margin: 2em 0;
+          font-size: 0.875em;
+          line-height: 1.7;
         }
-        .prose pre code {
+        .blog-content pre code {
           background-color: transparent;
           color: inherit;
           padding: 0;
           border-radius: 0;
         }
-        .prose ul, .prose ol {
+        .blog-content img {
+          border-radius: 0.75rem;
+          margin: 2em auto;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          max-width: 100%;
+          height: auto;
+          display: block;
+        }
+        .blog-content ul,
+        .blog-content ol {
+          margin: 1.5em 0;
           padding-left: 1.5em;
-          margin: 1em 0;
         }
-        .prose li {
-          margin-top: 0.5em;
-          margin-bottom: 0.5em;
-          color: #374151;
+        .blog-content li {
+          margin: 0.5em 0;
         }
-        .prose table {
+        .blog-content table {
           width: 100%;
           border-collapse: collapse;
           margin: 2em 0;
+          font-size: 0.875em;
         }
-        .prose th, .prose td {
+        .blog-content th,
+        .blog-content td {
           border: 1px solid #e5e7eb;
-          padding: 0.75em;
+          padding: 0.75em 1em;
           text-align: left;
         }
-        .prose th {
-          background-color: #f9fafb;
+        .blog-content th {
+          background-color: #f8fafc;
           font-weight: 600;
           color: #111827;
-        }
-        .prose td {
-          color: #374151;
         }
       `}</style>
     </>

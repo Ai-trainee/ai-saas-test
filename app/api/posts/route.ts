@@ -6,14 +6,14 @@ export async function GET() {
   try {
     const postsDirectory = path.join(process.cwd(), 'app/content/metadata')
     const fileNames = fs.readdirSync(postsDirectory)
-    
+
     const posts = fileNames
       .filter(fileName => fileName.endsWith('.json'))
       .map(fileName => {
         const fullPath = path.join(postsDirectory, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const metadata = JSON.parse(fileContents)
-        
+
         return {
           slug: fileName.replace(/\.json$/, ''),
           ...metadata,

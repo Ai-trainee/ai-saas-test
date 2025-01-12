@@ -4,17 +4,21 @@ import * as React from "react"
 import Link from "next/link"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import { Moon, Sun, Bot } from "lucide-react"
+import { Moon, Sun, Bot, Languages } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import { toast } from "@/components/ui/use-toast"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 export function Navbar() {
   const { theme, setTheme } = useTheme()
+  const { language, setLanguage } = useLanguage()
   const [scrolled, setScrolled] = React.useState(false)
   const [session, setSession] = React.useState<any>(null)
   const router = useRouter()
+  const t = translations.navbar[language]
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -45,11 +49,15 @@ export function Navbar() {
       window.location.href = '/'
     } catch (error: any) {
       toast({
-        title: "退出失败",
+        title: language === 'en' ? "Logout Failed" : "退出失败",
         description: error.message,
         variant: "destructive"
       })
     }
+  }
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'zh' : 'en')
   }
 
   return (
@@ -62,48 +70,52 @@ export function Navbar() {
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
               <Bot className="h-8 w-8 text-primary" />
-              <span className="font-bold text-xl">AI进修生</span>
+              <span className="font-bold text-xl">{t.brand}</span>
             </Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
             <Link href="/tools" className="text-sm font-medium hover:text-primary transition-colors">
-              AI工具
+              {t.tools}
             </Link>
             <Link href="/applications" className="text-sm font-medium hover:text-primary transition-colors">
-              AI应用
+              {t.applications}
             </Link>
             <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
-              AI进修生博客
+              {t.blog}
             </Link>
             <Link href="/news" className="text-sm font-medium hover:text-primary transition-colors">
-              每日AI资讯
+              {t.news}
             </Link>
             <Link href="/docs" className="text-sm font-medium hover:text-primary transition-colors">
-              文档
+              {t.docs}
             </Link>
             <Link href="/consulting" className="text-sm font-medium hover:text-primary transition-colors">
-              AI咨询
+              {t.consulting}
             </Link>
             <Link href="/about" className="text-sm font-medium hover:text-primary transition-colors">
-              关于我们
+              {t.about}
             </Link>
           </div>
 
           <div className="flex items-center space-x-4">
+            <Button variant="outline" size="icon" onClick={toggleLanguage}>
+              <Languages className="h-[1.2rem] w-[1.2rem]" />
+              <span className="sr-only">Toggle Language</span>
+            </Button>
             <Button variant="outline" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
               <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">切换主题</span>
+              <span className="sr-only">{t.toggleTheme}</span>
             </Button>
             {session ? (
               <Button onClick={handleLogout}>
-                退出
+                {t.logout}
               </Button>
             ) : (
               <Button asChild>
                 <Link href="/login">
-                  开始使用 →
+                  {t.getStarted}
                 </Link>
               </Button>
             )}

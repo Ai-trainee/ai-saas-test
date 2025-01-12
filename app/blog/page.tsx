@@ -8,6 +8,8 @@ import { CalendarDays, User2, Tag, ArrowRight, Search, Clock } from "lucide-reac
 import { motion, useScroll, useTransform } from "framer-motion"
 import { Input } from "@/components/ui/input"
 import Head from 'next/head'
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 interface Post {
   slug: string
@@ -28,6 +30,8 @@ export default function BlogPage() {
   const headerRef = useRef<HTMLDivElement>(null)
   const { scrollY } = useScroll()
   const headerOpacity = useTransform(scrollY, [0, 100], [1, 0.8])
+  const { language } = useLanguage()
+  const t = translations.blog[language]
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -57,20 +61,20 @@ export default function BlogPage() {
   return (
     <>
       <Head>
-        <title>AI进修生博客 - 探索AI技术前沿</title>
-        <meta name="description" content="探索AI技术前沿，分享实践经验，助力学习成长。最新的AI技术研究、应用实践和学习资源。" />
-        <meta property="og:title" content="AI进修生博客 - 探索AI技术前沿" />
-        <meta property="og:description" content="探索AI技术前沿，分享实践经验，助力学习成长。" />
+        <title>{t.meta.title}</title>
+        <meta name="description" content={t.meta.description} />
+        <meta property="og:title" content={t.meta.title} />
+        <meta property="og:description" content={t.meta.description} />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Blog",
-            "name": "AI进修生博客",
-            "description": "探索AI技术前沿，分享实践经验，助力学习成长",
+            "name": t.title,
+            "description": t.meta.schemaDescription,
             "url": "https://aitrainee.com/blog",
             "publisher": {
               "@type": "Organization",
-              "name": "AI进修生",
+              "name": t.author,
               "logo": {
                 "@type": "ImageObject",
                 "url": "https://aitrainee.com/logo.png"
@@ -95,10 +99,10 @@ export default function BlogPage() {
                 className="text-center mb-12"
               >
                 <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900 tracking-tight">
-                  AI进修生博客
+                  {t.title}
                 </h1>
                 <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-                  探索AI技术前沿，分享实践经验，助力学习成长
+                  {t.subtitle}
                 </p>
               </motion.div>
 
@@ -107,7 +111,7 @@ export default function BlogPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <Input
                     type="search"
-                    placeholder="搜索文章..."
+                    placeholder={t.search}
                     className="pl-10 bg-white border-gray-200 focus:border-gray-400 focus:ring-gray-400 text-gray-900 placeholder-gray-400"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -119,7 +123,7 @@ export default function BlogPage() {
                     onClick={() => setSelectedTag(null)}
                     className={`blog-tag ${!selectedTag ? 'bg-gray-900 text-white hover:bg-gray-800' : ''}`}
                   >
-                    全部
+                    {t.tags.all}
                   </button>
                   {allTags.map(tag => (
                     <button
@@ -166,12 +170,12 @@ export default function BlogPage() {
                           </div>
                           <div className="flex items-center gap-1">
                             <User2 className="h-4 w-4" />
-                            {post.author || 'AI进修生'}
+                            {post.author || t.author}
                           </div>
                           {post.readingTime && (
                             <div className="flex items-center gap-1">
                               <Clock className="h-4 w-4" />
-                              {post.readingTime}
+                              {post.readingTime} {t.readingTime}
                             </div>
                           )}
                         </div>

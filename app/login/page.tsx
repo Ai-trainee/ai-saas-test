@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
 import { Bot } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -15,8 +17,9 @@ export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const { language } = useLanguage()
+  const t = translations.login[language]
 
-  // 检查登录状态
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
@@ -45,8 +48,8 @@ export default function LoginPage() {
         if (signUpError) throw signUpError
 
         toast({
-          title: "注册成功",
-          description: "请查看您的邮箱以验证账号"
+          title: t.success.register,
+          description: t.success.checkEmail
         })
       } else {
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -56,12 +59,11 @@ export default function LoginPage() {
 
         if (signInError) throw signInError
 
-        // 检查邮箱是否已验证
         const { data: { user } } = await supabase.auth.getUser()
         if (!user?.email_confirmed_at) {
           toast({
-            title: "请先验证邮箱",
-            description: "请检查您的邮箱并点击验证链接",
+            title: t.error.verifyEmail,
+            description: t.error.checkEmailLink,
             variant: "destructive"
           })
           return
@@ -71,7 +73,7 @@ export default function LoginPage() {
       }
     } catch (error: any) {
       toast({
-        title: "错误",
+        title: t.error.title,
         description: error.message,
         variant: "destructive"
       })
@@ -85,15 +87,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md p-8 space-y-6 bg-card rounded-2xl border shadow-lg">
         <div className="flex flex-col items-center space-y-2">
           <Bot className="h-12 w-12 text-primary" />
-          <h1 className="text-2xl font-bold">{isSignUp ? "创建账号" : "欢迎回来"}</h1>
+          <h1 className="text-2xl font-bold">{isSignUp ? t.createAccount : t.welcomeBack}</h1>
           <p className="text-sm text-muted-foreground">
-            {isSignUp ? "开始您的AI学习之旅" : "登录以继续您的学习"}
+            {isSignUp ? t.startJourney : t.continueJourney}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">邮箱</Label>
+            <Label htmlFor="email">{t.email}</Label>
             <Input
               id="email"
               type="email"
@@ -104,7 +106,7 @@ export default function LoginPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">密码</Label>
+            <Label htmlFor="password">{t.password}</Label>
             <Input
               id="password"
               type="password"
@@ -116,7 +118,7 @@ export default function LoginPage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? "处理中..." : isSignUp ? "注册" : "登录"}
+            {isLoading ? t.processing : isSignUp ? t.register : t.login}
           </Button>
         </form>
 
@@ -126,7 +128,7 @@ export default function LoginPage() {
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-sm text-primary hover:underline"
           >
-            {isSignUp ? "已有账号？登录" : "没有账号？注册"}
+            {isSignUp ? t.haveAccount : t.noAccount}
           </button>
         </div>
       </div>

@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Loader2, ImagePlus, Eye, Code2 } from "lucide-react"
-import { motion, useMotionValue, useTransform } from "framer-motion"
+import { motion, useMotionValue } from "framer-motion"
 import { supabase } from "@/lib/supabase"
 import { VisionServiceCard } from "@/components/vision-service-card"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 // 定义切割区域的形状
 const sectionShapes = [
@@ -32,6 +34,8 @@ export default function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
+  const { language } = useLanguage()
+  const t = translations.dashboard[language]
 
   useEffect(() => {
     checkAuth()
@@ -74,26 +78,26 @@ export default function DashboardPage() {
 
   const visionServices = [
     {
-      title: "AI图像生成",
-      description: "使用先进的AI模型,将您的创意转化为独特的图像",
-      price: "￥0.1/次",
-      limits: "每天10次免费生成额度", 
+      title: t.services.imageGeneration.title,
+      description: t.services.imageGeneration.description,
+      price: t.services.imageGeneration.price,
+      limits: t.services.imageGeneration.limits,
       icon: <ImagePlus className="h-4 w-4" />,
       route: "/dashboard/image-generation"
     },
     {
-      title: "GLM-4V-Flash视觉分析",
-      description: "强大的视觉分析工具,支持图像描述、场景分析、物体识别等多种功能",
-      price: null,
-      limits: "完全免费使用",
+      title: t.services.visionAnalysis.title,
+      description: t.services.visionAnalysis.description,
+      price: t.services.visionAnalysis.price,
+      limits: t.services.visionAnalysis.limits,
       icon: <Eye className="h-4 w-4" />,
       route: "/dashboard/vision-analysis"
     },
     {
-      title: "CopyCoder", 
-      description: "上传网站截图,自动生成前端开发提示词,包括组件实现和结构分析",
-      price: null,
-      limits: "完全免费使用",
+      title: t.services.copyCoder.title,
+      description: t.services.copyCoder.description,
+      price: t.services.copyCoder.price,
+      limits: t.services.copyCoder.limits,
       icon: <Code2 className="h-4 w-4" />,
       route: "/dashboard/copycoder"
     }
@@ -133,11 +137,11 @@ export default function DashboardPage() {
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-40 h-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
             <h1 className="text-6xl font-bold">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-                视觉服务
+                {t.title}
               </span>
             </h1>
             <p className="mt-4 text-xl text-gray-400">
-              选择合适的视觉服务,开启您的AI之旅
+              {t.subtitle}
             </p>
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-1 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
           </motion.div>

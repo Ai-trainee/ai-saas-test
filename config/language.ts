@@ -103,6 +103,158 @@ export const translations = {
             }
         }
     },
+    serviceNav: {
+        en: {
+            backToServices: "Back to Services",
+            imageGeneration: "AI Image Generation",
+            visionAnalysis: "GLM-4V-Flash Vision Analysis"
+        },
+        zh: {
+            backToServices: "返回服务列表",
+            imageGeneration: "AI图像生成",
+            visionAnalysis: "GLM-4V-Flash视觉分析"
+        }
+    },
+    navMenu: {
+        en: {
+            aiResources: "AI Resources",
+            imageGeneration: "AI Image Generation",
+            visionAnalysis: "GLM-4V-Flash Vision Analysis",
+            techBlog: "Tech Blog",
+            learningResources: "AI Learning Resources"
+        },
+        zh: {
+            aiResources: "AI资源",
+            imageGeneration: "AI图像生成",
+            visionAnalysis: "GLM-4V-Flash视觉分析",
+            techBlog: "技术博客",
+            learningResources: "AI学习资源"
+        }
+    },
+    pricing: {
+        en: {
+            title: "Flexible Pricing Plans",
+            subtitle: "Choose a plan that fits your needs and budget, let AI Trainee assist your learning journey.",
+            monthly: "Monthly",
+            yearly: "Yearly",
+            savePercent: "Save 30%",
+            mostPopular: "Most Popular",
+            freeRegister: "Register Free",
+            subscribe: "Subscribe Now",
+            unusedCredits: "Unused credits can be carried over to the next billing cycle",
+            plans: {
+                amethyst: {
+                    name: "Amethyst",
+                    description: "No credit card required",
+                    features: [
+                        "All basic tools",
+                        "Chinese only",
+                        "250 words per request",
+                        "No AI analysis report",
+                        "No advanced algorithms",
+                        "No API access"
+                    ]
+                },
+                sapphire: {
+                    name: "Sapphire",
+                    description: "Most Popular",
+                    features: [
+                        "All tools and models",
+                        "All languages",
+                        "750 words per request",
+                        "1 AI analysis report",
+                        "No advanced algorithms",
+                        "No API access"
+                    ]
+                },
+                jade: {
+                    name: "Jade",
+                    description: "Professional Choice",
+                    features: [
+                        "All tools and models",
+                        "All languages",
+                        "1000 words per request",
+                        "3 AI analysis reports",
+                        "Advanced algorithm support",
+                        "No API access"
+                    ]
+                },
+                ruby: {
+                    name: "Ruby",
+                    description: "Enterprise Custom",
+                    features: [
+                        "All features",
+                        "All languages",
+                        "Unlimited words",
+                        "Unlimited AI reports",
+                        "Advanced algorithm support",
+                        "API access"
+                    ]
+                }
+            }
+        },
+        zh: {
+            title: "灵活的定价方案",
+            subtitle: "选择适合您需求和预算的方案，让AI进修生助力您的学习之旅。",
+            monthly: "月付",
+            yearly: "年付",
+            savePercent: "省30%",
+            mostPopular: "最受欢迎",
+            freeRegister: "免费注册",
+            subscribe: "立即订阅",
+            unusedCredits: "未使用的额度可以结转到下一个计费周期",
+            plans: {
+                amethyst: {
+                    name: "紫水晶",
+                    description: "无需信用卡",
+                    features: [
+                        "所有基础工具",
+                        "仅支持中文",
+                        "每次请求250字",
+                        "无AI分析报告",
+                        "无高级算法",
+                        "无API访问"
+                    ]
+                },
+                sapphire: {
+                    name: "蓝宝石",
+                    description: "最受欢迎",
+                    features: [
+                        "所有工具和模型",
+                        "支持所有语言",
+                        "每次请求750字",
+                        "1份AI分析报告",
+                        "无高级算法",
+                        "无API访问"
+                    ]
+                },
+                jade: {
+                    name: "翡翠",
+                    description: "专业选择",
+                    features: [
+                        "所有工具和模型",
+                        "支持所有语言",
+                        "每次请求1000字",
+                        "3份AI分析报告",
+                        "高级算法支持",
+                        "无API访问"
+                    ]
+                },
+                ruby: {
+                    name: "红宝石",
+                    description: "企业定制",
+                    features: [
+                        "所有功能",
+                        "支持所有语言",
+                        "无限制字数",
+                        "无限AI分析报告",
+                        "高级算法支持",
+                        "API访问"
+                    ]
+                }
+            }
+        }
+    },
     blog: {
         en: {
             title: "AI Trainee Blog",

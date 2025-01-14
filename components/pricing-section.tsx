@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Check, X } from "lucide-react"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 type PlanFeature = {
   name: string
@@ -26,92 +28,72 @@ type Plan = {
   popular?: boolean
 }
 
-const plans: Plan[] = [
-  {
-    name: "紫水晶",
-    icon: "💎",
-    description: "无需信用卡",
-    price: {
-      monthly: 0,
-      yearly: 0
-    },
-    color: "from-purple-500/20 to-purple-500/10",
-    features: [
-      { name: "所有基础工具", included: true },
-      { name: "仅支持中文", included: true },
-      { name: "每次请求250字", included: true },
-      { name: "无AI分析报告", included: false },
-      { name: "无高级算法", included: false },
-      { name: "无API访问", included: false }
-    ]
-  },
-  {
-    name: "蓝宝石",
-    icon: "🌟",
-    description: "最受欢迎",
-    price: {
-      monthly: 19.99,
-      yearly: 167.88
-    },
-    color: "from-blue-500/20 to-blue-500/10",
-    popular: true,
-    features: [
-      { name: "所有工具和模型", included: true },
-      { name: "支持所有语言", included: true },
-      { name: "每次请求750字", included: true },
-      { name: "1份AI分析报告", included: true },
-      { name: "无高级算法", included: false },
-      { name: "无API访问", included: false }
-    ]
-  },
-  {
-    name: "翡翠",
-    icon: "✨",
-    description: "专业选择",
-    price: {
-      monthly: 29.99,
-      yearly: 251.88
-    },
-    color: "from-emerald-500/20 to-emerald-500/10",
-    features: [
-      { name: "所有工具和模型", included: true },
-      { name: "支持所有语言", included: true },
-      { name: "每次请求1000字", included: true },
-      { name: "3份AI分析报告", included: true },
-      { name: "高级算法支持", included: true },
-      { name: "无API访问", included: false }
-    ]
-  },
-  {
-    name: "红宝石",
-    icon: "👑",
-    description: "企业定制",
-    price: {
-      monthly: 99.99,
-      yearly: 839.88
-    },
-    color: "from-red-500/20 to-red-500/10",
-    features: [
-      { name: "所有功能", included: true },
-      { name: "支持所有语言", included: true },
-      { name: "无限制字数", included: true },
-      { name: "无限AI分析报告", included: true },
-      { name: "高级算法支持", included: true },
-      { name: "API访问", included: true }
-    ]
-  }
-]
-
 export function PricingSection() {
   const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">("monthly")
+  const { language } = useLanguage()
+  const t = translations.pricing[language]
+
+  const plans: Plan[] = [
+    {
+      name: t.plans.amethyst.name,
+      icon: "💎",
+      description: t.plans.amethyst.description,
+      price: {
+        monthly: 0,
+        yearly: 0
+      },
+      color: "from-purple-500/20 to-purple-500/10",
+      features: t.plans.amethyst.features.map(name => ({ name, included: true }))
+    },
+    {
+      name: t.plans.sapphire.name,
+      icon: "🌟",
+      description: t.plans.sapphire.description,
+      price: {
+        monthly: 19.99,
+        yearly: 167.88
+      },
+      color: "from-blue-500/20 to-blue-500/10",
+      popular: true,
+      features: t.plans.sapphire.features.map((name, index) => ({ 
+        name, 
+        included: index < 4 
+      }))
+    },
+    {
+      name: t.plans.jade.name,
+      icon: "✨",
+      description: t.plans.jade.description,
+      price: {
+        monthly: 29.99,
+        yearly: 251.88
+      },
+      color: "from-emerald-500/20 to-emerald-500/10",
+      features: t.plans.jade.features.map((name, index) => ({ 
+        name, 
+        included: index < 5 
+      }))
+    },
+    {
+      name: t.plans.ruby.name,
+      icon: "👑",
+      description: t.plans.ruby.description,
+      price: {
+        monthly: 99.99,
+        yearly: 839.88
+      },
+      color: "from-red-500/20 to-red-500/10",
+      features: t.plans.ruby.features.map(name => ({ name, included: true }))
+    }
+  ]
 
   return (
     <section className="w-full py-24 bg-gradient-to-b from-background to-background/50">
       <div className="container px-4 mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">灵活的定价方案</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t.title}</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            选择适合您需求和预算的方案，让AI进修生助力您的学习之旅。
+            {t.subtitle}
           </p>
 
           <div className="flex items-center justify-center space-x-4 mb-8">
@@ -120,16 +102,16 @@ export function PricingSection() {
               onClick={() => setBillingInterval("monthly")}
               className="relative"
             >
-              月付
+              {t.monthly}
             </Button>
             <Button
               variant={billingInterval === "yearly" ? "default" : "outline"}
               onClick={() => setBillingInterval("yearly")}
               className="relative"
             >
-              年付
+              {t.yearly}
               <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">
-                省30%
+                {t.savePercent}
               </span>
             </Button>
           </div>
@@ -149,7 +131,7 @@ export function PricingSection() {
             >
               {plan.popular && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-sm px-3 py-1 rounded-full">
-                  最受欢迎
+                  {t.mostPopular}
                 </span>
               )}
 
@@ -160,12 +142,12 @@ export function PricingSection() {
               <div className="mb-6">
                 <div className="text-3xl font-bold">
                   {plan.price[billingInterval] === 0 ? (
-                    "免费"
+                    t.freeRegister
                   ) : (
                     <>
                       ¥{plan.price[billingInterval].toFixed(2)}
                       <span className="text-sm font-normal text-muted-foreground">
-                        /{billingInterval === "monthly" ? "月" : "年"}
+                        /{billingInterval === "monthly" ? t.monthly.toLowerCase() : t.yearly.toLowerCase()}
                       </span>
                     </>
                   )}
@@ -193,10 +175,10 @@ export function PricingSection() {
               <Button
                 asChild
                 className="w-full"
-                variant={plan.name === "紫水晶" ? "outline" : "default"}
+                variant={plan.name === t.plans.amethyst.name ? "outline" : "default"}
               >
                 <Link href="/login">
-                  {plan.name === "紫水晶" ? "免费注册" : "立即订阅"}
+                  {plan.name === t.plans.amethyst.name ? t.freeRegister : t.subscribe}
                 </Link>
               </Button>
             </motion.div>
@@ -204,7 +186,7 @@ export function PricingSection() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground mt-8">
-          未使用的额度可以结转到下一个计费周期
+          {t.unusedCredits}
         </p>
       </div>
     </section>

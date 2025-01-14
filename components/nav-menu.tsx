@@ -10,19 +10,23 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 export function NavMenu() {
   const pathname = usePathname()
   const router = useRouter()
+  const { language } = useLanguage()
+  const t = translations.navMenu[language]
 
   const services = [
     {
-      name: "AI图像生成",
+      name: t.imageGeneration,
       icon: <ImagePlus className="h-4 w-4" />,
       route: "/dashboard/image-generation",
     },
     {
-      name: "GLM-4V-Flash视觉分析",
+      name: t.visionAnalysis,
       icon: <Eye className="h-4 w-4" />,
       route: "/dashboard/vision-analysis",
     },
@@ -30,12 +34,12 @@ export function NavMenu() {
       type: "separator"
     },
     {
-      name: "技术博客",
+      name: t.techBlog,
       icon: <BookOpen className="h-4 w-4" />,
       route: "/blog",
     },
     {
-      name: "AI学习资源",
+      name: t.learningResources,
       icon: <Bot className="h-4 w-4" />,
       route: "/resources",
     }
@@ -44,7 +48,7 @@ export function NavMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost">AI资源</Button>
+        <Button variant="ghost">{t.aiResources}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {services.map((service, index) => (

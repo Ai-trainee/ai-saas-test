@@ -82,7 +82,7 @@ export default function VisionAnalysisPage() {
   const [orbitAngle, setOrbitAngle] = useState(0)
   const [starPositions, setStarPositions] = useState<StarPosition[]>([])
   const [exportLoading, setExportLoading] = useState(false)
-  const [starVelocities, setStarVelocities] = useState<Array<{vx: number, vy: number, ax: number, ay: number}>>([])
+  const [starVelocities, setStarVelocities] = useState<Array<{ vx: number, vy: number, ax: number, ay: number }>>([])
   const [starStates, setStarStates] = useState<StarState[]>([])
 
   // 添加鼠标位置状态
@@ -205,7 +205,7 @@ export default function VisionAnalysisPage() {
         pulsePhase: (state.pulsePhase + PULSE_SPEED) % (Math.PI * 2)
       })))
     }
-    
+
     const interval = setInterval(updateStars, 50)
     return () => clearInterval(interval)
   }, [])
@@ -215,14 +215,14 @@ export default function VisionAnalysisPage() {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY })
     }
-    
+
     const handleMouseDown = () => setIsMouseDown(true)
     const handleMouseUp = () => setIsMouseDown(false)
-    
+
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
-    
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('mousedown', handleMouseDown)
@@ -269,7 +269,7 @@ export default function VisionAnalysisPage() {
         }
       }))
     }
-    
+
     const interval = setInterval(moveStars, 16)
     return () => clearInterval(interval)
   }, [starStates, starVelocities])
@@ -447,7 +447,7 @@ export default function VisionAnalysisPage() {
         }).join('\n\n')
         return `### ${role}\n\n${content}\n`
       }).join('\n---\n\n')
-      
+
       const blob = new Blob([mdContent], { type: 'text/markdown' })
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -457,14 +457,14 @@ export default function VisionAnalysisPage() {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-      
+
       toast({
         title: "导出成功",
         description: "对话记录已导出为Markdown格式",
       })
     } catch (error) {
       toast({
-        title: "导出失败", 
+        title: "导出失败",
         description: error instanceof Error ? error.message : '未知错误',
         variant: "destructive",
       })
@@ -509,9 +509,8 @@ export default function VisionAnalysisPage() {
               return (
                 <motion.button
                   key={btn.id}
-                  className={`constellation-star ${
-                    selectedFunction === btn.id ? 'active' : ''
-                  }`}
+                  className={`constellation-star ${selectedFunction === btn.id ? 'active' : ''
+                    }`}
                   style={starStyle}
                   onClick={() => handleFunctionClick(btn)}
                   whileHover={{ scale: 1.05 }}
@@ -603,7 +602,7 @@ export default function VisionAnalysisPage() {
             <ScrollArea className="flex-1">
               <div className="max-w-3xl mx-auto space-y-6 py-4">
                 {isFirstMessage && messages.length === 0 && (
-                  <motion.div 
+                  <motion.div
                     className="welcome-container"
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -622,7 +621,7 @@ export default function VisionAnalysisPage() {
                     </div>
                   </motion.div>
                 )}
-                
+
                 {/* 消息列表 */}
                 <AnimatePresence>
                   {messages.map((message, index) => (
@@ -631,9 +630,8 @@ export default function VisionAnalysisPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className={`flex items-start gap-3 ${
-                        message.role === 'assistant' ? 'justify-start' : 'justify-end'
-                      }`}
+                      className={`flex items-start gap-3 ${message.role === 'assistant' ? 'justify-start' : 'justify-end'
+                        }`}
                     >
                       {message.role === 'assistant' && (
                         <Avatar className="w-8 h-8">
@@ -702,10 +700,10 @@ export default function VisionAnalysisPage() {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                  
+
                   {/* 图片预览 */}
                   {imageUrl && (
-                    <motion.div 
+                    <motion.div
                       className="preview-star"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -733,7 +731,7 @@ export default function VisionAnalysisPage() {
                     <Textarea
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      placeholder={selectedFunction 
+                      placeholder={selectedFunction
                         ? functionButtons.find(b => b.id === selectedFunction)?.prompt
                         : "在星空中输入您的问题..."
                       }

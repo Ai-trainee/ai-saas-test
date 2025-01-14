@@ -3,26 +3,30 @@
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ImagePlus, Eye, ArrowLeft } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 
 export function ServiceNav() {
   const pathname = usePathname()
   const router = useRouter()
+  const { language } = useLanguage()
+  const t = translations.serviceNav[language]
 
   const services = [
     {
-      name: "返回服务列表",
+      name: t.backToServices,
       icon: <ArrowLeft className="h-4 w-4" />,
       route: "/dashboard",
       variant: "ghost" as const
     },
     {
-      name: "AI图像生成",
+      name: t.imageGeneration,
       icon: <ImagePlus className="h-4 w-4" />,
       route: "/dashboard/image-generation",
       variant: "ghost" as const
     },
     {
-      name: "GLM-4V-Flash视觉分析",
+      name: t.visionAnalysis,
       icon: <Eye className="h-4 w-4" />,
       route: "/dashboard/vision-analysis",
       variant: "ghost" as const

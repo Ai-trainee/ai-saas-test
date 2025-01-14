@@ -3,10 +3,7 @@ export const translations = {
     en: {
       brand: "AI Trainee",
       tools: "AI Tools",
-      applications: "AI Apps",
-      blog: "AI Trainee Blog",
       news: "Daily AI News",
-      docs: "Docs",
       consulting: "AI Consulting",
       about: "About Us",
       logout: "Logout",
@@ -16,10 +13,7 @@ export const translations = {
     zh: {
       brand: "AI进修生",
       tools: "AI工具",
-      applications: "AI应用",
-      blog: "AI进修生博客",
       news: "每日AI资讯",
-      docs: "文档",
       consulting: "AI咨询",
       about: "关于我们",
       logout: "退出",

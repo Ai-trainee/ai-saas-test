@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { generatePrompt } from './service'
+import { useLanguage } from '@/contexts/language-context'
+import { translations } from '@/config/language'
 import './styles.css'
 
 // 动画变体配置
@@ -49,6 +51,8 @@ export default function CopyCoderPage() {
   const [error, setError] = useState<string>('')
   const [dragActive, setDragActive] = useState(false)
   const [copySuccess, setCopySuccess] = useState(false)
+  const { language } = useLanguage()
+  const t = translations.copyCoder[language]
 
   // 处理图片上传
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +60,7 @@ export default function CopyCoderPage() {
     if (!file) return
     
     if (file.size > 5 * 1024 * 1024) {
-      setError('图片大小不能超过5MB')
+      setError(t.toastMessages.fileTooLarge)
       return
     }
 
@@ -86,7 +90,7 @@ export default function CopyCoderPage() {
     if (!file) return
 
     if (file.size > 5 * 1024 * 1024) {
-      setError('图片大小不能超过5MB')
+      setError(t.toastMessages.fileTooLarge)
       return
     }
 
@@ -108,7 +112,7 @@ export default function CopyCoderPage() {
       const prompt = await generatePrompt(image, type)
       setResult(prompt)
     } catch (error) {
-      setError('生成提示词失败,请重试')
+      setError(t.toastMessages.analyzeFailed)
       console.error(error)
     } finally {
       setLoading(false)
@@ -122,8 +126,8 @@ export default function CopyCoderPage() {
       setCopySuccess(true)
       setTimeout(() => setCopySuccess(false), 2000)
     } catch (err) {
-      console.error('复制失败:', err)
-      setError('复制失败,请重试')
+      console.error('Copy failed:', err)
+      setError(t.toastMessages.copyFailed)
     }
   }
 
@@ -144,10 +148,10 @@ export default function CopyCoderPage() {
           variants={itemVariants}
         >
           <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">
-            AI 智能分析
+            {t.title}
           </h1>
           <p className="text-gray-500">
-            上传界面截图,快速获取组件实现建议和结构分析
+            {t.subtitle}
           </p>
         </motion.div>
 
@@ -172,7 +176,7 @@ export default function CopyCoderPage() {
               >
                 <img 
                   src={image} 
-                  alt="Preview" 
+                  alt={t.previewAlt}
                   className="copycoder-preview max-h-[400px] mx-auto rounded-lg shadow-lg"
                 />
                 <motion.button
@@ -202,8 +206,8 @@ export default function CopyCoderPage() {
                   <Upload className="w-10 h-10 text-purple-500/60" />
                 </motion.div>
                 <div>
-                  <p className="text-lg font-medium">拖拽上传网站截图</p>
-                  <p className="text-sm text-gray-400">或点击选择文件</p>
+                  <p className="text-lg font-medium">{t.uploadTitle}</p>
+                  <p className="text-sm text-gray-400">{t.uploadDescription}</p>
                 </div>
                 <input
                   type="file"
@@ -221,7 +225,7 @@ export default function CopyCoderPage() {
                     onClick={() => document.getElementById('image-upload')?.click()}
                     className="border-2"
                   >
-                    选择文件
+                    {t.selectFile}
                   </Button>
                 </motion.div>
               </motion.div>
@@ -256,7 +260,7 @@ export default function CopyCoderPage() {
                   disabled={loading}
                   className="copycoder-button"
                 >
-                  生成组件实现提示词
+                  {t.generateComponent}
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -267,7 +271,7 @@ export default function CopyCoderPage() {
                   disabled={loading}
                   className="copycoder-button"
                 >
-                  生成结构分析提示词
+                  {t.generateStructure}
                 </Button>
               </motion.div>
             </motion.div>
@@ -285,7 +289,7 @@ export default function CopyCoderPage() {
               className="copycoder-result rounded-xl p-6 space-y-4"
             >
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-medium">分析结果</h3>
+                <h3 className="text-lg font-medium">{t.resultTitle}</h3>
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -303,10 +307,10 @@ export default function CopyCoderPage() {
                         exit={{ opacity: 0, y: -10 }}
                         className="text-green-500"
                       >
-                        已复制
+                        {t.copied}
                       </motion.span>
                     ) : (
-                      '复制'
+                      t.copy
                     )}
                     {copySuccess && (
                       <motion.div
@@ -315,7 +319,7 @@ export default function CopyCoderPage() {
                         exit={{ scale: 0 }}
                         className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs px-2 py-1 rounded"
                       >
-                        复制成功!
+                        {t.copySuccess}
                       </motion.div>
                     )}
                   </Button>
@@ -350,7 +354,7 @@ export default function CopyCoderPage() {
                   <div className="copycoder-loading absolute inset-0" />
                   <Loader2 className="w-16 h-16 text-purple-500" />
                 </motion.div>
-                <p className="text-sm text-center text-gray-300">正在分析图片...</p>
+                <p className="text-sm text-center text-gray-300">{t.analyzing}</p>
               </motion.div>
             </motion.div>
           )}

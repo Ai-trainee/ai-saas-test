@@ -13,6 +13,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { db, ChatHistory } from "@/lib/indexed-db"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 import {
   Popover,
   PopoverContent,
@@ -66,6 +68,8 @@ const PULSE_SPEED = 0.1 // 脉冲速度
 
 export default function VisionAnalysisPage() {
   const router = useRouter()
+  const { language } = useLanguage()
+  const t = translations.visionAnalysis[language]
   const [imageUrl, setImageUrl] = useState("")
   const [inputText, setInputText] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
@@ -230,7 +234,7 @@ export default function VisionAnalysisPage() {
     }
   }, [])
 
-  // 增强星座物��系统
+  // 增强星座物理系统
   useEffect(() => {
     const moveStars = () => {
       setStarPositions(prev => prev.map((pos, index) => {
@@ -283,8 +287,7 @@ export default function VisionAnalysisPage() {
   const handleImageUpload = useCallback((file: File) => {
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: "图片过大",
-        description: "请上传5MB以内的图片",
+        title: t.toastMessages.fileTooLarge,
         variant: "destructive",
       })
       return
@@ -292,8 +295,7 @@ export default function VisionAnalysisPage() {
 
     if (!['image/jpeg', 'image/png'].includes(file.type)) {
       toast({
-        title: "格式不支持",
-        description: "仅支持JPG、PNG格式图片",
+        title: t.toastMessages.invalidFile,
         variant: "destructive",
       })
       return
@@ -306,7 +308,7 @@ export default function VisionAnalysisPage() {
       setImageUrl(base64)
     }
     reader.readAsDataURL(file)
-  }, [])
+  }, [t.toastMessages])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -337,7 +339,13 @@ export default function VisionAnalysisPage() {
   }, [])
 
   const handleSendMessage = async () => {
-    if (!inputText && !imageUrl) return
+    if (!inputText && !imageUrl) {
+      toast({
+        title: t.toastMessages.uploadFirst,
+        variant: "destructive",
+      })
+      return
+    }
     setIsProcessing(true)
     setIsFirstMessage(false)
 
@@ -386,7 +394,7 @@ export default function VisionAnalysisPage() {
       })
 
       if (!response.ok) {
-        throw new Error(`请求失败: ${response.status}`)
+        throw new Error(t.toastMessages.analyzeFailed)
       }
 
       const data = await response.json()
@@ -403,9 +411,13 @@ export default function VisionAnalysisPage() {
         setMessages(prev => [...prev, assistantMessage])
       }
 
+      toast({
+        title: t.toastMessages.analyzeSuccess,
+      })
+
     } catch (error: any) {
       toast({
-        title: "发送失败",
+        title: t.toastMessages.analyzeFailed,
         description: error.message,
         variant: "destructive",
       })
@@ -548,7 +560,7 @@ export default function VisionAnalysisPage() {
                 </motion.div>
                 <h1 className="text-xl font-medium bg-clip-text text-transparent 
                   bg-gradient-to-r from-purple-400 to-blue-400">
-                  星瞳 - AI视觉探索助手
+                  {t.title}
                 </h1>
               </div>
               <div className="flex items-center space-x-6">
@@ -558,7 +570,7 @@ export default function VisionAnalysisPage() {
                   onClick={handleNewChat}
                 >
                   <Plus className="w-4 h-4" />
-                  <span>新对话</span>
+                  <span>{t.newChat}</span>
                 </motion.button>
                 <motion.button
                   className="cosmic-nav-button"
@@ -567,7 +579,7 @@ export default function VisionAnalysisPage() {
                   disabled={exportLoading || messages.length === 0}
                 >
                   <FileText className="w-4 h-4" />
-                  <span>{exportLoading ? "导出中..." : "导出对话"}</span>
+                  <span>{exportLoading ? t.exporting : t.exportChat}</span>
                 </motion.button>
                 <motion.button
                   className="cosmic-nav-button"
@@ -575,7 +587,7 @@ export default function VisionAnalysisPage() {
                   onClick={() => router.push('/dashboard')}
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  <span>返回</span>
+                  <span>{t.back}</span>
                 </motion.button>
               </div>
             </div>
@@ -613,10 +625,10 @@ export default function VisionAnalysisPage() {
                     </div>
                     <div className="welcome-text">
                       <h3 className="text-2xl font-medium text-purple-200">
-                        欢迎来到 AI 星空助手
+                        {t.welcomeTitle}
                       </h3>
                       <p className="text-sm text-purple-300/80">
-                        点击周围的星座开始对话，或直接输入您的问题
+                        {t.welcomeSubtitle}
                       </p>
                     </div>
                   </motion.div>
@@ -710,7 +722,7 @@ export default function VisionAnalysisPage() {
                     >
                       <img
                         src={imageUrl}
-                        alt="Preview"
+                        alt={t.previewAlt}
                         className="h-full w-auto object-contain rounded-lg"
                       />
                       <motion.button
@@ -731,10 +743,7 @@ export default function VisionAnalysisPage() {
                     <Textarea
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      placeholder={selectedFunction
-                        ? functionButtons.find(b => b.id === selectedFunction)?.prompt
-                        : "在星空中输入您的问题..."
-                      }
+                      placeholder={t.inputPlaceholder}
                       className="cosmic-textarea"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -762,9 +771,9 @@ export default function VisionAnalysisPage() {
                         </PopoverTrigger>
                         <PopoverContent className="cosmic-popover">
                           <div className="space-y-2">
-                            <h4 className="font-medium text-sm text-gray-200">输入图片URL</h4>
+                            <h4 className="font-medium text-sm text-gray-200">{t.enterImageUrl}</h4>
                             <Textarea
-                              placeholder="https://example.com/image.jpg"
+                              placeholder={t.imageUrlPlaceholder}
                               value={imageUrl}
                               onChange={(e) => {
                                 setImageUrl(e.target.value)
@@ -779,7 +788,7 @@ export default function VisionAnalysisPage() {
                                 whileHover={{ scale: 1.05 }}
                                 onClick={() => setShowImageUrlInput(false)}
                               >
-                                确定
+                                {t.confirm}
                               </motion.button>
                             </div>
                           </div>

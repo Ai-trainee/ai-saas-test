@@ -8,6 +8,8 @@ import { toast } from "@/components/ui/use-toast"
 import { Loader2, ImagePlus, Settings2, Sparkles } from "lucide-react"
 import { imageModels, type ImageModelConfig } from "@/lib/image-models"
 import { supabase } from "@/lib/supabase"
+import { useLanguage } from "@/contexts/language-context"
+import { translations } from "@/config/language"
 import {
   Select,
   SelectContent,
@@ -39,6 +41,8 @@ export default function ImageGenerationPage() {
   const [height, setHeight] = useState(selectedModel.defaultParams.height)
   const [steps, setSteps] = useState(selectedModel.defaultParams.steps)
   const [numImages, setNumImages] = useState(selectedModel.defaultParams.n)
+  const { language } = useLanguage()
+  const t = translations.imageGeneration[language]
 
   useEffect(() => {
     checkAuth()
@@ -91,7 +95,7 @@ export default function ImageGenerationPage() {
   async function generateImage() {
     if (!prompt) {
       toast({
-        title: "请输入提示词",
+        title: t.toastMessages.enterPrompt,
         variant: "destructive",
       })
       return
@@ -123,11 +127,11 @@ export default function ImageGenerationPage() {
 
       setGeneratedImage(`data:image/png;base64,${data.data[0].b64_json}`)
       toast({
-        title: "图片生成成功",
+        title: t.toastMessages.generateSuccess,
       })
     } catch (error: any) {
       toast({
-        title: "生成失败",
+        title: t.toastMessages.generateFailed,
         description: error.message,
         variant: "destructive",
       })
@@ -141,9 +145,9 @@ export default function ImageGenerationPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">AI图像生成</h1>
+            <h1 className="text-3xl font-bold">{t.title}</h1>
             <p className="text-muted-foreground">
-              输入提示词，让AI为您创造独特的图像
+              {t.subtitle}
             </p>
           </div>
           <Sheet>
@@ -154,14 +158,14 @@ export default function ImageGenerationPage() {
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle>高级设置</SheetTitle>
+                <SheetTitle>{t.advancedSettings}</SheetTitle>
                 <SheetDescription>
-                  自定义图像生成参数
+                  {t.customizeParams}
                 </SheetDescription>
               </SheetHeader>
               <div className="mt-6 space-y-6">
                 <div className="space-y-2">
-                  <Label>模型</Label>
+                  <Label>{t.model}</Label>
                   <Select value={selectedModel.id} onValueChange={handleModelChange}>
                     <SelectTrigger>
                       <SelectValue />
@@ -181,7 +185,7 @@ export default function ImageGenerationPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>图片比例</Label>
+                  <Label>{t.imageRatio}</Label>
                   <Select value={`${width}x${height}`} onValueChange={handleSizeChange}>
                     <SelectTrigger>
                       <SelectValue />
@@ -197,7 +201,7 @@ export default function ImageGenerationPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>生成步数 ({steps})</Label>
+                  <Label>{t.generationSteps} ({steps})</Label>
                   <Slider
                     value={[steps]}
                     onValueChange={([value]) => setSteps(value)}
@@ -208,7 +212,7 @@ export default function ImageGenerationPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>生成数量 ({numImages})</Label>
+                  <Label>{t.generationCount} ({numImages})</Label>
                   <Slider
                     value={[numImages]}
                     onValueChange={([value]) => setNumImages(value)}
@@ -224,7 +228,7 @@ export default function ImageGenerationPage() {
 
         <div className="space-y-4">
           <Textarea
-            placeholder="描述您想要生成的图像..."
+            placeholder={t.promptPlaceholder}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             className="min-h-[100px]"
@@ -237,12 +241,12 @@ export default function ImageGenerationPage() {
             {isGenerating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                生成中...
+                {t.generating}
               </>
             ) : (
               <>
                 <ImagePlus className="mr-2 h-4 w-4" />
-                生成图像
+                {t.generateImage}
               </>
             )}
           </Button>
@@ -257,7 +261,7 @@ export default function ImageGenerationPage() {
               className="space-y-4"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold">生成结果</h2>
+                <h2 className="text-xl font-semibold">{t.generationResult}</h2>
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                   <Sparkles className="h-4 w-4" />
                   <span>{selectedModel.name}</span>
@@ -266,7 +270,7 @@ export default function ImageGenerationPage() {
               <div className="relative aspect-square rounded-lg overflow-hidden border">
                 <img
                   src={generatedImage}
-                  alt="AI生成的图像"
+                  alt="AI Generated Image"
                   className="w-full h-full object-cover"
                 />
               </div>

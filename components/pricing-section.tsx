@@ -55,9 +55,9 @@ export function PricingSection() {
       },
       color: "from-blue-500/20 to-blue-500/10",
       popular: true,
-      features: t.plans.sapphire.features.map((name, index) => ({ 
-        name, 
-        included: index < 4 
+      features: t.plans.sapphire.features.map((name, index) => ({
+        name,
+        included: index < 4
       }))
     },
     {
@@ -69,9 +69,9 @@ export function PricingSection() {
         yearly: 251.88
       },
       color: "from-emerald-500/20 to-emerald-500/10",
-      features: t.plans.jade.features.map((name, index) => ({ 
-        name, 
-        included: index < 5 
+      features: t.plans.jade.features.map((name, index) => ({
+        name,
+        included: index < 5
       }))
     },
     {

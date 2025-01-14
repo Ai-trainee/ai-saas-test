@@ -39,14 +39,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     checkAuth()
-    
+
     const handleMouseMove = (e: MouseEvent) => {
       const x = (e.clientX - window.innerWidth / 2) / 50
       const y = (e.clientY - window.innerHeight / 2) / 50
       mouseX.set(x)
       mouseY.set(y)
     }
-    
+
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
@@ -106,7 +106,7 @@ export default function DashboardPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-gray-900 to-black">
       {/* 背景网格 */}
-      <div 
+      <div
         className="absolute inset-0 opacity-20"
         style={{
           backgroundImage: `
@@ -128,7 +128,7 @@ export default function DashboardPage() {
 
       <div className="container relative mx-auto px-4 py-16">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -168,7 +168,7 @@ export default function DashboardPage() {
                 >
                   {/* 区域背景 */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${sectionShapes[index].gradient}`} />
-                  
+
                   {/* 装饰边框 */}
                   <div className="absolute inset-0">
                     <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-white/20 to-transparent" />

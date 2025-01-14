@@ -41,9 +41,8 @@ export function ServiceNav() {
             <Button
               key={service.route}
               variant={service.variant}
-              className={`whitespace-nowrap ${
-                pathname === service.route ? "bg-muted" : ""
-              }`}
+              className={`whitespace-nowrap ${pathname === service.route ? "bg-muted" : ""
+                }`}
               onClick={() => {
                 router.push(service.route)
                 router.refresh()

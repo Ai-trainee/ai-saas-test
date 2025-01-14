@@ -12,8 +12,8 @@ import './styles.css'
 // 动画变体配置
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
@@ -25,8 +25,8 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] }
   }
@@ -34,7 +34,7 @@ const itemVariants = {
 
 const loadingVariants = {
   initial: { rotate: 0 },
-  animate: { 
+  animate: {
     rotate: 360,
     transition: {
       duration: 1.5,
@@ -58,7 +58,7 @@ export default function CopyCoderPage() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    
+
     if (file.size > 5 * 1024 * 1024) {
       setError(t.toastMessages.fileTooLarge)
       return
@@ -105,7 +105,7 @@ export default function CopyCoderPage() {
   // 生成提示词
   const handleGeneratePrompt = async (type: 'component' | 'structure') => {
     if (!image) return
-    
+
     setLoading(true)
     setError('')
     try {
@@ -132,18 +132,18 @@ export default function CopyCoderPage() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="copycoder-container mx-auto p-8 min-h-screen flex flex-col items-center justify-center"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.div 
+      <motion.div
         className="w-full max-w-3xl space-y-8"
         variants={containerVariants}
       >
         {/* 标题区域 */}
-        <motion.div 
+        <motion.div
           className="text-center space-y-2"
           variants={itemVariants}
         >
@@ -156,7 +156,7 @@ export default function CopyCoderPage() {
         </motion.div>
 
         {/* 上传区域 */}
-        <motion.div 
+        <motion.div
           className={`copycoder-upload-zone relative border-2 border-dashed rounded-xl p-8 text-center
             ${dragActive ? 'border-purple-500 bg-purple-500/5' : 'border-purple-500/30'}
             ${error ? 'border-red-500/50' : ''}`}
@@ -167,15 +167,15 @@ export default function CopyCoderPage() {
         >
           <AnimatePresence mode="wait">
             {image ? (
-              <motion.div 
+              <motion.div
                 className="relative"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
               >
-                <img 
-                  src={image} 
+                <img
+                  src={image}
                   alt={t.previewAlt}
                   className="copycoder-preview max-h-[400px] mx-auto rounded-lg shadow-lg"
                 />
@@ -193,13 +193,13 @@ export default function CopyCoderPage() {
                 </motion.button>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 className="space-y-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <motion.div 
+                <motion.div
                   className="copycoder-upload-icon w-20 h-20 mx-auto bg-purple-500/10 rounded-full flex items-center justify-center"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -232,7 +232,7 @@ export default function CopyCoderPage() {
             )}
           </AnimatePresence>
           {error && (
-            <motion.p 
+            <motion.p
               className="mt-2 text-sm text-red-500"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -245,7 +245,7 @@ export default function CopyCoderPage() {
         {/* 操作按钮 */}
         <AnimatePresence>
           {image && (
-            <motion.div 
+            <motion.div
               className="flex gap-4 justify-center"
               variants={itemVariants}
               initial="hidden"
@@ -345,7 +345,7 @@ export default function CopyCoderPage() {
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="bg-black/80 p-8 rounded-xl space-y-4"
               >
-                <motion.div 
+                <motion.div
                   className="relative w-16 h-16 mx-auto"
                   variants={loadingVariants}
                   initial="initial"

@@ -18,9 +18,11 @@ export function HeroSection() {
   ]
 
   return (
-    <section className="relative pt-20 pb-12 overflow-hidden bg-gradient-to-b from-background to-background/50">
+    <section className="relative pt-20 pb-12 overflow-hidden bg-background">
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 animate-pulse" />
+      <div className="absolute inset-0 backdrop-blur-3xl" />
 
       <div className="container px-4 mx-auto relative z-10">
         <div className="max-w-4xl mx-auto">

@@ -22,12 +22,14 @@ export default function Home() {
   }
 
   return (
-    <main className="relative">
+    <main className="relative bg-background">
       <HeroSection />
 
       <section id="tools" className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/50 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background" />
         <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
+        <div className="absolute inset-0 backdrop-blur-3xl" />
 
         <motion.div
           className="container px-4 mx-auto relative z-10"

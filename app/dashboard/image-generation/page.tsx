@@ -1,13 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { Loader2, ImagePlus, Settings2, Sparkles } from "lucide-react"
 import { imageModels, type ImageModelConfig } from "@/lib/image-models"
-import { supabase } from "@/lib/supabase"
 import { useLanguage } from "@/contexts/language-context"
 import { translations } from "@/config/language"
 import {
@@ -30,9 +28,6 @@ import { Slider } from "@/components/ui/slider"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function ImageGenerationPage() {
-  const router = useRouter()
-  const [isLoading, setIsLoading] = useState(true)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
@@ -43,35 +38,6 @@ export default function ImageGenerationPage() {
   const [numImages, setNumImages] = useState(selectedModel.defaultParams.n)
   const { language } = useLanguage()
   const t = translations.imageGeneration[language]
-
-  useEffect(() => {
-    checkAuth()
-  }, [])
-
-  async function checkAuth() {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.replace('/login')
-        return
-      }
-      setIsAuthenticated(true)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return null
-  }
 
   const handleModelChange = (modelId: string) => {
     const model = imageModels.find(m => m.id === modelId)

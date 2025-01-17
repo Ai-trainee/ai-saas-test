@@ -75,9 +75,6 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
-              {t.tools}
-            </Link>
             <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors">
               {t.news}
             </Link>

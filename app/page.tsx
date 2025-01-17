@@ -22,14 +22,13 @@ export default function Home() {
   }
 
   return (
-    <main className="relative bg-background">
+    <main className="relative bg-white dark:bg-black text-black dark:text-white">
       <HeroSection />
 
       <section id="tools" className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background" />
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-white dark:from-black dark:via-black dark:to-black" />
+        <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px]" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
-        <div className="absolute inset-0 backdrop-blur-3xl" />
 
         <motion.div
           className="container px-4 mx-auto relative z-10"
@@ -45,10 +44,10 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 {t.title}
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-lg opacity-80 max-w-2xl mx-auto">
                 {t.subtitle}
               </p>
             </motion.div>

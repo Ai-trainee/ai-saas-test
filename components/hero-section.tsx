@@ -18,11 +18,10 @@ export function HeroSection() {
   ]
 
   return (
-    <section className="relative pt-20 pb-12 overflow-hidden bg-background">
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-background to-background" />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 animate-pulse" />
-      <div className="absolute inset-0 backdrop-blur-3xl" />
+    <section className="relative pt-20 pb-12 overflow-hidden bg-white dark:bg-black text-black dark:text-white">
+      <div className="absolute inset-0 bg-grid-black/[0.02] dark:bg-grid-white/[0.02] bg-[size:50px_50px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/50 via-white to-white dark:from-black/50 dark:via-black dark:to-black" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
 
       <div className="container px-4 mx-auto relative z-10">
         <div className="max-w-4xl mx-auto">
@@ -36,7 +35,7 @@ export function HeroSection() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center justify-center px-4 py-1.5 mb-6 text-sm rounded-full border bg-background/50 backdrop-blur-sm"
+              className="inline-flex items-center justify-center px-4 py-1.5 mb-6 text-sm rounded-full border border-white/10 bg-white/5 dark:bg-black/50 backdrop-blur-sm"
             >
               <span className="relative flex h-2 w-2 mr-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -49,7 +48,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent"
+              className="text-4xl md:text-5xl font-bold mb-4"
             >
               {t.title}
             </motion.h1>
@@ -58,7 +57,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8"
+              className="text-lg opacity-80 max-w-2xl mx-auto mb-8"
             >
               {t.subtitle}
             </motion.p>
@@ -74,7 +73,7 @@ export function HeroSection() {
                   {t.startLearning}
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="min-w-[200px]">
+              <Button asChild variant="outline" size="lg" className="min-w-[200px] border-white/10 hover:bg-white/5">
                 <Link href="/blog">
                   {t.browseBlog}
                 </Link>
@@ -93,15 +92,15 @@ export function HeroSection() {
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.7 + index * 0.1 }}
-                  className="flex flex-col items-center p-4 rounded-lg bg-background/50 backdrop-blur-sm border"
+                  className="flex flex-col items-center p-4 rounded-lg border border-white/10 bg-white/5 dark:bg-black/50 backdrop-blur-sm"
                 >
                   <div className="p-2 rounded-full bg-primary/10 text-primary mb-2">
                     {stat.icon}
                   </div>
-                  <div className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+                  <div className="text-2xl font-bold">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm opacity-80">
                     {stat.label}
                   </div>
                 </motion.div>

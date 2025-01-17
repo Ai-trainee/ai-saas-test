@@ -23,10 +23,10 @@ export function ServiceCard({ serviceKey, icon, href }: ServiceCardProps) {
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ y: -5 }}
             transition={{ duration: 0.3 }}
-            className="group relative rounded-xl border border-primary/10 bg-background/50 backdrop-blur-sm hover:border-primary/20 hover:bg-primary/[0.02] hover:shadow-lg hover:shadow-primary/5 transition-all"
+            className="group relative rounded-xl border border-white/10 bg-white/5 dark:bg-black/50 backdrop-blur-sm hover:border-primary/20 hover:bg-primary/[0.02] hover:shadow-lg hover:shadow-primary/5 transition-all text-black dark:text-white"
         >
             <div className="relative p-6 space-y-4">
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/50 rounded-xl" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/5 dark:to-black/50 rounded-xl" />
                 <div className="relative z-10">
                     <div className="flex items-center justify-between">
                         <motion.div
@@ -50,7 +50,7 @@ export function ServiceCard({ serviceKey, icon, href }: ServiceCardProps) {
                         <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
                             {t.title}
                         </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
+                        <p className="text-sm opacity-80">
                             {t.description}
                         </p>
                     </div>
@@ -62,7 +62,7 @@ export function ServiceCard({ serviceKey, icon, href }: ServiceCardProps) {
                                     {t.price}
                                 </div>
                                 {t.limits && (
-                                    <div className="text-xs text-muted-foreground">
+                                    <div className="text-xs opacity-80">
                                         {t.limits}
                                     </div>
                                 )}

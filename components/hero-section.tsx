@@ -6,9 +6,11 @@ import { Users, Zap, Bot } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 import { translations } from "@/config/language"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 export function HeroSection() {
   const { language } = useLanguage()
+  const router = useRouter()
   const t = translations.hero[language]
 
   const stats = [
@@ -16,6 +18,10 @@ export function HeroSection() {
     { icon: <Zap className="h-5 w-5" />, value: "99.9%", label: t.stats.satisfaction },
     { icon: <Bot className="h-5 w-5" />, value: "12+", label: t.stats.capabilities }
   ]
+
+  const handleStartLearning = () => {
+    router.push('/login')
+  }
 
   return (
     <section className="relative pt-20 pb-12 overflow-hidden bg-white dark:bg-black text-black dark:text-white">
@@ -68,10 +74,12 @@ export function HeroSection() {
               transition={{ delay: 0.5 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
             >
-              <Button asChild size="lg" className="min-w-[200px] bg-primary hover:bg-primary/90">
-                <Link href="#tools">
-                  {t.startLearning}
-                </Link>
+              <Button
+                size="lg"
+                className="min-w-[200px] bg-primary hover:bg-primary/90"
+                onClick={handleStartLearning}
+              >
+                {t.startLearning}
               </Button>
               <Button asChild variant="outline" size="lg" className="min-w-[200px] border-white/10 hover:bg-white/5">
                 <Link href="/blog">
